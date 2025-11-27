@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Index</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<h1>
+    Lista de enemigos
+</h1>
+
+<table id="EnemigosTable">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>pais</th>
+        <th>afiliacion_politica</th>
+    </tr>
+    </thead>
+
+    <tbody id="EnemigosBody">
+    </tbody>
+</table>
+<div class="formulario-container">
+    <h2>Insertar Nuevo Enemigo</h2>
+    <form id="formInsertar">
+        <div class="form-group">
+            <label for="insertName">Name:</label>
+            <input type="text" id="insertName" required>
+        </div>
+        <div class="form-group">
+            <label for="insertPais">País:</label>
+            <input type="text" id="insertPais" required>
+        </div>
+        <div class="form-group">
+            <label for="insertAfiliacion_politica">Afiliacion_politica:</label>
+            <input type="text" id="insertAfiliacion_politica" required>
+        </div>
+        <button type="submit">Insertar Enemigo</button>
+    </form>
+    <div id="mensajeInsertar" class="mensaje"></div>
+</div>
+
+<!-- Formulario EDITAR -->
+<div class="formulario-container">
+    <h2>Editar Enemigo</h2>
+    <form id="formEditar">
+        <div class="form-group">
+            <label for="editId">ID del Enemigo:</label>
+            <input type="text" id="editId" required>
+        </div>
+        <div class="form-group">
+            <label for="editName">Name:</label>
+            <input type="text" id="editName" required>
+        </div>
+        <div class="form-group">
+            <label for="editPais">País:</label>
+            <input type="text" id="editPais" required>
+        </div>
+        <div class="form-group">
+            <label for="editAfiliacion_politica">Afiliacion_politica:</label>
+            <input type="text" id="editAfiliacion_politica" required>
+        </div>
+        <button type="submit">Actualizar Enemigo</button>
+    </form>
+    <div id="mensajeEditar" class="mensaje"></div>
+</div>
+
+<div class="formulario-container">
+    <h2>Eliminar Enemigo</h2>
+    <form id="formEliminar">
+        <div class="form-group">
+            <label for="deleteId">ID del Enemigo a Eliminar:</label>
+            <input type="text" id="deleteId" required>
+        </div>
+        <button type="submit">Eliminar Enemigo</button>
+    </form>
+    <div id="mensajeEliminar" class="mensaje"></div>
+</div>
+
+</body>
+<script src="script.js" defer></script>
+</html>
