@@ -1,0 +1,7 @@
+Hablar con BD	"Yo solo hago consultas"
+
+¿Qué es? El teleoperador que llama a la base de datos.
+
+¿Qué hace? Aquí solo escribes consultas SQL personalizadas.
+
+Los métodos básicos (findAll, findById, save, delete) ya vienen dados por Spring.

@@ -1,0 +1,35 @@
+Recibir peticiones	"Yo atiendo al cliente"
+
+¿Qué es? El recepcionista de la API. Atiende las llamadas HTTP.
+
+¿Qué hace?
+
+@GetMapping → Escucha peticiones GET
+
+@PostMapping → Escucha peticiones POST
+
+@PutMapping → Escucha peticiones PUT
+
+@DeleteMapping → Escucha peticiones DELETE
+
+@PathVariable → Coge datos de la URL (/campanas/5 → id=5)
+
+@RequestParam → Coge datos de la URL con ? (/buscar?nombre=Carlos)
+
+@RequestBody → Coge datos del cuerpo de la petición (JSON)
+
+Lo que NO hace el Controller:
+
+NO encripta contraseñas
+
+NO valida reglas de negocio
+
+NO habla directamente con la BD
+
+Lo que SÍ hace:
+
+Recibir la petición
+
+Llamar al Service
+
+Devolver 200 OK, 404 Not Found, 201 Created...

@@ -1,0 +1,9 @@
+Encriptar contraseñas	"Yo protejo las claves"
+
+¿Qué es? Es la "caja de herramientas" que Spring guarda para usar en toda la app.
+
+¿Qué hace? Crea un encriptador de contraseñas. Lo necesitas para:
+
+Convertir "hola123" en un galimatías ilegible antes de guardarlo
+
+Comparar "hola123" con el galimatías cuando el usuario hace login

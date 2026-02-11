@@ -1,0 +1,15 @@
+Representar tablas	"Yo soy la BD en Java"
+
+¿Qué es? Son las tablas de la base de datos convertidas a Java.
+
+¿Qué hace?
+
+@Entity → Le dice a Spring: "Esto es una tabla de la BD"
+
+@Id → La clave primaria
+
+@GeneratedValue → El ID se genera solo, yo no lo pongo
+
+@Column → Esto es una columna de la tabla
+
+@OneToMany, @ManyToOne → Relaciones entre tablas

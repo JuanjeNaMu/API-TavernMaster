@@ -1,0 +1,10 @@
+Transportar datos	"Yo traigo lo que manda el front"
+
+¿Qué es? Un sobre de transporte para llevar datos.
+
+¿Qué hace? Cuando el frontend te envía datos para registrar un usuario,
+no te manda una entidad Jugador completa. Te manda un JSON con nombre, email, contraseña...
+Eso lo recoges en un DTO.
+
+¿Por qué no usas la entidad directamente? Porque la entidad tiene cosas que no quieres que te manden desde fuera
+(el ID, por ejemplo). El DTO solo tiene lo que necesitas recibir.

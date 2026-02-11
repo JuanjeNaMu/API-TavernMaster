@@ -1,0 +1,13 @@
+Lógica de negocio	"Yo pienso y decido"
+
+¿Qué es? El cerebro de la aplicación. Aquí se piensa, se decide, se aplican reglas.
+
+¿Qué hace?
+
+Recibe peticiones del Controller
+
+Aplica lógica de negocio (si algo es null, si hay que encriptar, si se puede borrar...)
+
+Llama al Repository para que traiga datos
+
+Devuelve resultados al Controller

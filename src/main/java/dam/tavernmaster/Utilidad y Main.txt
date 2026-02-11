@@ -1,0 +1,24 @@
+Archivo: GenerarHash.java
+
+Herramienta manual	"Yo ayudo con Flyway"
+
+¿Qué es? Una herramienta manual que no forma parte de la API.
+
+¿Qué hace? Genera contraseñas encriptadas para meterlas en los scripts SQL de Flyway.
+
+¿Cuándo se usa? Cuando necesitas insertar usuarios por defecto en la BD
+y no quieres escribir la contraseña en texto plano en el SQL.
+
+__________________________________________________________________________________________
+
+Archivo: TavernMasterApplication
+
+Arrancar todo	"Yo enciendo la API"
+
+¿Qué es? El interruptor de la luz. Todo arranca aquí.
+
+¿Qué hace?
+
+@SpringBootApplication → Escanea todos los paquetes, configura todo
+
+SpringApplication.run() → Levanta el servidor, conecta la BD, deja todo listo
