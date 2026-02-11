@@ -1,87 +1,563 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Index</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>TavernMaster - Gestión de Rol</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: #e67e22;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #bdc3c7;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: #34495e;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        th {
+            background: #e67e22;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #2c3e50;
+        }
+        tr:hover {
+            background: #3d566e;
+        }
+        .formulario-container {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #2c3e50;
+            color: white;
+            font-size: 14px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #e67e22;
+        }
+        button {
+            background: #e67e22;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #d35400;
+            transform: scale(1.05);
+        }
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-danger {
+            background: #c0392b;
+        }
+        .btn-danger:hover {
+            background: #e74c3c;
+        }
+        .btn-success {
+            background: #27ae60;
+        }
+        .btn-success:hover {
+            background: #2ecc71;
+        }
+        .btn-warning {
+            background: #f39c12;
+        }
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-admin {
+            background: #e67e22;
+            color: white;
+        }
+        .badge-user {
+            background: #3498db;
+            color: white;
+        }
+        .imagen-thumb {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .imagen-preview {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            background: #2c3e50;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            color: #bdc3c7;
+        }
+        .tab.active {
+            background: #e67e22;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background: #34495e;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            color: white;
+            position: relative;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: white;
+        }
+    </style>
 </head>
-
 <body>
-<h1>
-    Lista de enemigos
-</h1>
+<div class="container">
+    <h1>🏰 TavernMaster</h1>
+    <div class="subtitle">"Tu app para la gestión de Rol" ⚔️</div>
 
-<table id="EnemigosTable">
-    <thead>
-    <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>pais</th>
-        <th>afiliacion_politica</th>
-    </tr>
-    </thead>
+    <!-- ESTADÍSTICAS -->
+    <div class="stats">
+        <div class="stat-card">
+            <div>🎮 Jugadores</div>
+            <div class="stat-number" id="statJugadores">0</div>
+        </div>
+        <div class="stat-card">
+            <div>⚔️ Personajes</div>
+            <div class="stat-number" id="statPersonajes">0</div>
+        </div>
+        <div class="stat-card">
+            <div>🏆 Campañas</div>
+            <div class="stat-number" id="statCampanas">0</div>
+        </div>
+    </div>
 
-    <tbody id="EnemigosBody">
-    </tbody>
-</table>
-<div class="formulario-container">
-    <h2>Insertar Nuevo Enemigo</h2>
-    <form id="formInsertar">
-        <div class="form-group">
-            <label for="insertName">Name:</label>
-            <input type="text" id="insertName" required>
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab active" onclick="activarTab('jugadores')">🎮 Jugadores</div>
+        <div class="tab" onclick="activarTab('personajes')">⚔️ Personajes</div>
+        <div class="tab" onclick="activarTab('campanas')">🏆 Campañas</div>
+    </div>
+
+    <!-- ============ TAB JUGADORES ============ -->
+    <div id="tab-jugadores" class="tab-content active">
+        <h2>🎮 Gestión de Jugadores</h2>
+
+        <!-- TABLA JUGADORES -->
+        <table id="JugadoresTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Admin</th>
+                <th>Sexo</th>
+                <th>F. Nacimiento</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="JugadoresBody"></tbody>
+        </table>
+
+        <!-- FORMULARIO INSERTAR JUGADOR -->
+        <div class="formulario-container">
+            <h3>➕ Insertar Jugador</h3>
+            <form id="formInsertarJugador">
+                <div class="form-group">
+                    <label for="insertJugadorNombre">Nombre *</label>
+                    <input type="text" id="insertJugadorNombre" placeholder="Ej: DarkBlade" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertJugadorPassword">Contraseña *</label>
+                    <input type="password" id="insertJugadorPassword" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertJugadorEmail">Email *</label>
+                    <input type="email" id="insertJugadorEmail" placeholder="ejemplo@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertJugadorFechaNac">Fecha de nacimiento</label>
+                    <input type="date" id="insertJugadorFechaNac">
+                </div>
+                <div class="form-group">
+                    <label for="insertJugadorSexo">Sexo</label>
+                    <select id="insertJugadorSexo">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Hombre">👨 Hombre</option>
+                        <option value="Mujer">👩 Mujer</option>
+                        <option value="Otro">⚧ Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="insertJugadorAdmin">¿Es administrador?</label>
+                    <select id="insertJugadorAdmin">
+                        <option value="false">No</option>
+                        <option value="true">Sí</option>
+                    </select>
+                </div>
+                <button type="submit">Insertar Jugador</button>
+            </form>
+            <div id="mensajeInsertarJugador" class="mensaje"></div>
         </div>
-        <div class="form-group">
-            <label for="insertPais">País:</label>
-            <input type="text" id="insertPais" required>
+
+        <!-- FORMULARIO EDITAR/BORRAR JUGADOR POR ID - CORREGIDO -->
+        <div class="formulario-container">
+            <h3>✏️ Editar / 🗑️ Borrar Jugador por ID</h3>
+            <div class="form-group">
+                <label for="editarJugadorId">ID del Jugador</label>
+                <input type="number" id="editarJugadorId" placeholder="Ej: 1">
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn-warning" onclick="cargarJugadorParaEditar(document.getElementById('editarJugadorId').value)">✏️ Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarJugadorPorId(document.getElementById('editarJugadorId').value)">🗑️ Borrar Jugador</button>
+            </div>
+            <div id="mensajeEditarJugador" class="mensaje"></div>
         </div>
-        <div class="form-group">
-            <label for="insertAfiliacion_politica">Afiliacion_politica:</label>
-            <input type="text" id="insertAfiliacion_politica" required>
+    </div>
+
+    <!-- ============ TAB PERSONAJES ============ -->
+    <div id="tab-personajes" class="tab-content">
+        <h2>⚔️ Gestión de Personajes</h2>
+
+        <!-- TABLA PERSONAJES -->
+        <table id="PersonajesTable">
+            <thead>
+            <tr>
+                <th>ID_PER</th>
+                <th>Nombre</th>
+                <th>Nivel</th>
+                <th>Jugador Padre</th>
+                <th>ID_CAM</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="PersonajesBody"></tbody>
+        </table>
+
+        <!-- FORMULARIO INSERTAR PERSONAJE -->
+        <div class="formulario-container">
+            <h3>➕ Insertar Personaje</h3>
+            <form id="formInsertarPersonaje">
+                <div class="form-group">
+                    <label for="insertPersonajeNombre">Nombre *</label>
+                    <input type="text" id="insertPersonajeNombre" placeholder="Ej: Arkan" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertPersonajeNivel">Nivel *</label>
+                    <input type="number" id="insertPersonajeNivel" value="1" min="1" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertPersonajeJugadorPadre">Jugador Padre *</label>
+                    <input type="text" id="insertPersonajeJugadorPadre" placeholder="Ej: LunaWolf" list="jugadores-list" required>
+                    <datalist id="jugadores-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="insertPersonajeIdCam">ID_CAM (Campaña)</label>
+                    <input type="number" id="insertPersonajeIdCam" placeholder="Ej: 1 (opcional)">
+                </div>
+                <div class="form-group">
+                    <label for="insertPersonajeImagen">Imagen (Base64)</label>
+                    <textarea id="insertPersonajeImagen" rows="3" placeholder="Pega aquí la imagen en Base64..."></textarea>
+                </div>
+                <button type="submit">Insertar Personaje</button>
+            </form>
+            <div id="mensajeInsertarPersonaje" class="mensaje"></div>
         </div>
-        <button type="submit">Insertar Enemigo</button>
-    </form>
-    <div id="mensajeInsertar" class="mensaje"></div>
+
+        <!-- FORMULARIO EDITAR/BORRAR PERSONAJE POR ID - CORREGIDO -->
+        <div class="formulario-container">
+            <h3>✏️ Editar / 🗑️ Borrar Personaje por ID</h3>
+            <div class="form-group">
+                <label for="editarPersonajeId">ID del Personaje</label>
+                <input type="number" id="editarPersonajeId" placeholder="Ej: 1">
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn-warning" onclick="cargarPersonajeParaEditar(document.getElementById('editarPersonajeId').value)">✏️ Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarPersonajePorId(document.getElementById('editarPersonajeId').value)">🗑️ Borrar Personaje</button>
+            </div>
+            <div id="mensajeEditarPersonaje" class="mensaje"></div>
+        </div>
+    </div>
+
+    <!-- ============ TAB CAMPAÑAS ============ -->
+    <div id="tab-campanas" class="tab-content">
+        <h2>🏆 Gestión de Campañas</h2>
+
+        <!-- TABLA CAMPAÑAS -->
+        <table id="CampanasTable">
+            <thead>
+            <tr>
+                <th>ID_CAM</th>
+                <th>Título</th>
+                <th>Master</th>
+                <th>Próxima Sesión</th>
+                <th>Encuentros</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="CampanasBody"></tbody>
+        </table>
+
+        <!-- FORMULARIO INSERTAR CAMPAÑA -->
+        <div class="formulario-container">
+            <h3>➕ Insertar Campaña</h3>
+            <form id="formInsertarCampana">
+                <div class="form-group">
+                    <label for="insertCampanaTitulo">Título *</label>
+                    <input type="text" id="insertCampanaTitulo" placeholder="Ej: Vergel Gris" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertCampanaMaster">Master *</label>
+                    <input type="text" id="insertCampanaMaster" placeholder="Ej: DarkBlade" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertCampanaProximaSesion">Próxima sesión</label>
+                    <input type="date" id="insertCampanaProximaSesion">
+                </div>
+                <div class="form-group">
+                    <label for="insertCampanaEncuentros">Encuentros</label>
+                    <input type="number" id="insertCampanaEncuentros" value="0" min="0">
+                </div>
+                <button type="submit">Insertar Campaña</button>
+            </form>
+            <div id="mensajeInsertarCampana" class="mensaje"></div>
+        </div>
+
+        <!-- FORMULARIO EDITAR/BORRAR CAMPAÑA POR ID - CORREGIDO (ESTE ERA EL PROBLEMA) -->
+        <div class="formulario-container">
+            <h3>✏️ Editar / 🗑️ Borrar Campaña por ID</h3>
+            <div class="form-group">
+                <label for="editarCampanaId">ID de la Campaña</label>
+                <input type="number" id="editarCampanaId" placeholder="Ej: 1">
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn-warning" onclick="cargarCampanaParaEditar(document.getElementById('editarCampanaId').value)">✏️ Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarCampanaPorId(document.getElementById('editarCampanaId').value)">🗑️ Borrar Campaña</button>
+            </div>
+            <div id="mensajeEditarCampana" class="mensaje"></div>
+        </div>
+    </div>
 </div>
 
-<!-- Formulario EDITAR -->
-<div class="formulario-container">
-    <h2>Editar Enemigo</h2>
-    <form id="formEditar">
-        <div class="form-group">
-            <label for="editId">ID del Enemigo:</label>
-            <input type="text" id="editId" required>
-        </div>
-        <div class="form-group">
-            <label for="editName">Name:</label>
-            <input type="text" id="editName" required>
-        </div>
-        <div class="form-group">
-            <label for="editPais">País:</label>
-            <input type="text" id="editPais" required>
-        </div>
-        <div class="form-group">
-            <label for="editAfiliacion_politica">Afiliacion_politica:</label>
-            <input type="text" id="editAfiliacion_politica" required>
-        </div>
-        <button type="submit">Actualizar Enemigo</button>
-    </form>
-    <div id="mensajeEditar" class="mensaje"></div>
+<!-- MODAL PARA EDITAR JUGADOR -->
+<div id="modalEditarJugador" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal('modalEditarJugador')">&times;</span>
+        <h3>✏️ Editar Jugador</h3>
+        <form id="formEditarJugador">
+            <input type="hidden" id="editJugadorId">
+            <div class="form-group">
+                <label for="editJugadorNombre">Nombre *</label>
+                <input type="text" id="editJugadorNombre" required>
+            </div>
+            <div class="form-group">
+                <label for="editJugadorEmail">Email *</label>
+                <input type="email" id="editJugadorEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="editJugadorPassword">Nueva Contraseña (dejar vacío para no cambiar)</label>
+                <input type="password" id="editJugadorPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label for="editJugadorFechaNac">Fecha de nacimiento</label>
+                <input type="date" id="editJugadorFechaNac">
+            </div>
+            <div class="form-group">
+                <label for="editJugadorSexo">Sexo</label>
+                <select id="editJugadorSexo">
+                    <option value="">-- Selecciona --</option>
+                    <option value="Hombre">👨 Hombre</option>
+                    <option value="Mujer">👩 Mujer</option>
+                    <option value="Otro">⚧ Otro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editJugadorAdmin">¿Es administrador?</label>
+                <select id="editJugadorAdmin">
+                    <option value="false">No</option>
+                    <option value="true">Sí</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="button" onclick="cerrarModal('modalEditarJugador')">Cancelar</button>
+        </form>
+    </div>
 </div>
 
-<div class="formulario-container">
-    <h2>Eliminar Enemigo</h2>
-    <form id="formEliminar">
-        <div class="form-group">
-            <label for="deleteId">ID del Enemigo a Eliminar:</label>
-            <input type="text" id="deleteId" required>
-        </div>
-        <button type="submit">Eliminar Enemigo</button>
-    </form>
-    <div id="mensajeEliminar" class="mensaje"></div>
+<!-- MODAL PARA EDITAR PERSONAJE -->
+<div id="modalEditarPersonaje" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal('modalEditarPersonaje')">&times;</span>
+        <h3>✏️ Editar Personaje</h3>
+        <form id="formEditarPersonaje">
+            <input type="hidden" id="editPersonajeId">
+            <div class="form-group">
+                <label for="editPersonajeNombre">Nombre *</label>
+                <input type="text" id="editPersonajeNombre" required>
+            </div>
+            <div class="form-group">
+                <label for="editPersonajeNivel">Nivel *</label>
+                <input type="number" id="editPersonajeNivel" min="1" max="20" required>
+            </div>
+            <div class="form-group">
+                <label for="editPersonajeJugadorPadre">Jugador Padre *</label>
+                <input type="text" id="editPersonajeJugadorPadre" list="jugadores-list-edit" required>
+                <datalist id="jugadores-list-edit"></datalist>
+            </div>
+            <div class="form-group">
+                <label for="editPersonajeIdCam">ID_CAM (Campaña)</label>
+                <input type="number" id="editPersonajeIdCam" placeholder="Ej: 1">
+            </div>
+            <div class="form-group">
+                <label for="editPersonajeImagen">Imagen (Base64)</label>
+                <textarea id="editPersonajeImagen" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="button" onclick="cerrarModal('modalEditarPersonaje')">Cancelar</button>
+        </form>
+    </div>
 </div>
 
+<!-- MODAL PARA EDITAR CAMPAÑA -->
+<div id="modalEditarCampana" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal('modalEditarCampana')">&times;</span>
+        <h3>✏️ Editar Campaña</h3>
+        <form id="formEditarCampana">
+            <input type="hidden" id="editCampanaId">
+            <div class="form-group">
+                <label for="editCampanaTitulo">Título *</label>
+                <input type="text" id="editCampanaTitulo" required>
+            </div>
+            <div class="form-group">
+                <label for="editCampanaMaster">Master *</label>
+                <input type="text" id="editCampanaMaster" required>
+            </div>
+            <div class="form-group">
+                <label for="editCampanaProximaSesion">Próxima sesión</label>
+                <input type="date" id="editCampanaProximaSesion">
+            </div>
+            <div class="form-group">
+                <label for="editCampanaEncuentros">Encuentros</label>
+                <input type="number" id="editCampanaEncuentros" min="0">
+            </div>
+            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="button" onclick="cerrarModal('modalEditarCampana')">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
-<script src="script.js" defer></script>
 </html>
