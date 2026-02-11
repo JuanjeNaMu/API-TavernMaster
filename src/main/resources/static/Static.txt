@@ -1,0 +1,41 @@
+¿Qué es? La tienda física de la aplicación. Lo que ve el cliente.
+
+¿Qué hace?
+
+index.html:
+
+La estructura de la página (botones, tablas, formularios)
+
+Las pestañas: Jugadores, Personajes, Campañas
+
+Los modales para editar
+
+Los estilos CSS (colores, fuentes, sombras)
+
+script.js:
+
+Las funciones: cargarJugadores(), insertarPersonaje(), borrarCampana()
+
+Las llamadas a la API con fetch()
+
+Los console.log() para ver qué llega del backend
+
+La lógica de mostrar/ocultar modales
+
+Cómo funciona:
+
+Spring Boot sirve estos archivos automáticamente
+
+Entras en http://localhost:8080 y ves el index.html
+
+El script.js hace peticiones a http://localhost:8080/api/...
+
+El backend responde con JSON
+
+El script.js pinta los datos en las tablas
+
+En cristiano:
+
+Backend = Java, Spring Boot, MySQL → Está en src/main/java
+
+Frontend = HTML, CSS, JavaScript → Está en src/main/resources/static

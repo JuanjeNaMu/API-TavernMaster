@@ -14,10 +14,12 @@ public class Personaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_per")
+    @JsonProperty("id_per")           // 👈 AÑADIDO: Para que el JSON use el mismo nombre que la BD
     private Integer idPer;
     // Clave primaria, se autoincrementa
 
     @Column(name = "jugador_padre")
+    @JsonProperty("jugador_padre")    // 👈 AÑADIDO: Para que el JSON use el mismo nombre que la BD
     private String jugadorPadre;
     // Nombre del jugador dueño del personaje (relación con Jugador por nombre)
 
@@ -30,20 +32,23 @@ public class Personaje {
     // JsonBackReference evita el bucle infinito con Campana
 
     @Column(name = "nombre_per")
+    @JsonProperty("nombre_per")       // 👈 AÑADIDO: Para que el JSON use el mismo nombre que la BD
     private String nombrePer;
     // Nombre del personaje
 
     @Column(name = "nivel")
+    @JsonProperty("nivel")           // 👈 AÑADIDO: Para que el JSON use el mismo nombre que la BD
     private Integer nivel;
     // Nivel del personaje
 
     @Column(name = "imagen_base64", columnDefinition = "TEXT")
+    @JsonProperty("imagen_base64")   // 👈 AÑADIDO: Para que el JSON use el mismo nombre que la BD
     private String imagenBase64;
     // Imagen del personaje en base64 (texto largo)
     // Se guarda como TEXT en la BD
 
-    // NUEVO: Campo para obtener SOLO el ID de la campaña
-    @JsonProperty("id_cam")
+    // Getter virtual para obtener SOLO el ID de la campaña
+    @JsonProperty("id_cam")          // 👈 ESTE YA ESTABA BIEN
     public Integer getIdCam() {
         // Esto NO es un campo de la BD
         // Es un getter virtual para que el JSON devuelva solo el ID de la campaña
@@ -75,9 +80,12 @@ public class Personaje {
 }
 
 // NOTAS MENTALES:
-// - idPer se genera automático
-// - jugadorPadre es un String con el nombre del jugador, no la entidad Jugador completa
+// - id_per se genera automático, NUNCA asignarlo manualmente
+// - jugador_padre es OBLIGATORIO (la columna en BD es NOT NULL)
 // - campana puede ser null (personaje sin campaña asignada)
-// - JsonBackReference evita que al devolver Campana se intente devolver Personaje otra vez
-// - El método getIdCam() es solo para el JSON, no es columna en BD
-// - Cuando devuelvo un personaje, el JSON incluye "id_cam": 5 en vez de todo el objeto campana
+// - JsonBackReference evita el bucle infinito con Campana
+// - Los @JsonProperty en los CAMPOS hacen que:
+//     * Al recibir JSON, mapee "id_per" del JSON a idPer en Java
+//     * Al devolver JSON, serialice idPer como "id_per"
+// - El método getIdCam() sigue siendo necesario para mostrar SOLO el ID de la campaña
+// - AHORA EL JSON COINCIDE EXACTAMENTE CON LOS NOMBRES DE LA BD ✅

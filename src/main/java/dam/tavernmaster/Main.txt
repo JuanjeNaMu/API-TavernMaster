@@ -1,0 +1,11 @@
+Archivo: TavernMasterApplication
+
+Arrancar todo	"Yo enciendo la API"
+
+¿Qué es? El interruptor de la luz. Todo arranca aquí.
+
+¿Qué hace?
+
+@SpringBootApplication → Escanea todos los paquetes, configura todo
+
+SpringApplication.run() → Levanta el servidor, conecta la BD, deja todo listo

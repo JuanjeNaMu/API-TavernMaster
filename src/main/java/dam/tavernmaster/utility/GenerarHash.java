@@ -1,4 +1,4 @@
-package dam.tavernmaster;
+package dam.tavernmaster.utility;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

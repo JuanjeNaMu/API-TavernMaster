@@ -1,0 +1,17 @@
+¿Qué es? El albañil de la base de datos. Construye y mantiene las tablas.
+
+¿Qué hace?
+
+V1__Create_tables.sql → Crea las tablas: CAMPANA, JUGADOR, PERSONAJE
+
+V2__Insert_initial_data.sql → Mete datos por defecto (jugadores, campañas)
+
+V3__Update_constraints.sql → Añade claves foráneas, índices, restricciones
+
+Cómo funciona:
+
+Cuando arrancas la app, Flyway mira la carpeta db/migration
+
+Ejecuta los scripts en orden (V1, V2, V3...)
+
+Crea una tabla flyway_schema_history para no repetir scripts ya ejecutados
