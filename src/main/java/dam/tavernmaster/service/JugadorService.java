@@ -4,6 +4,7 @@ import dam.tavernmaster.entity.Jugador;
 import dam.tavernmaster.entity.Sexo;
 import dam.tavernmaster.repository.JugadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +19,16 @@ public class JugadorService {
     @Autowired
     private JugadorRepository jugadorRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     // === CRUD BÁSICO ===
     public Jugador saveJugador(Jugador jugador) {
+        // 👇 AÑADE ESTAS 3 LÍNEAS AQUÍ
+        // Si la contraseña NO parece un hash de bcrypt, la hasheamos
+        if (jugador.getPassword() != null && !jugador.getPassword().startsWith("$2")) {
+            jugador.setPassword(passwordEncoder.encode(jugador.getPassword()));
+        }
         return jugadorRepository.save(jugador);
     }
 
@@ -102,8 +111,16 @@ public class JugadorService {
         return jugadorRepository.findById(id).map(jugador -> {
             if (jugadorDetails.getNombreJug() != null)
                 jugador.setNombreJug(jugadorDetails.getNombreJug());
-            if (jugadorDetails.getPassword() != null)
-                jugador.setPassword(jugadorDetails.getPassword());
+
+            // 👇 AÑADE ESTAS 3 LÍNEAS PARA LA CONTRASEÑA
+            if (jugadorDetails.getPassword() != null) {
+                if (!jugadorDetails.getPassword().startsWith("$2")) {
+                    jugador.setPassword(passwordEncoder.encode(jugadorDetails.getPassword()));
+                } else {
+                    jugador.setPassword(jugadorDetails.getPassword());
+                }
+            }
+
             if (jugadorDetails.getEmail() != null)
                 jugador.setEmail(jugadorDetails.getEmail());
             if (jugadorDetails.getEsAdmin() != null)
