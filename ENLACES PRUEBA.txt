@@ -1,0 +1,12 @@
+https://github.com/JuanjeNaMu/API-TavernMaster
+
+Conecta AWS
+https://awsacademy.instructure.com/courses/152432/modules/items/14817245
+
+
+Entra en la BBDD
+http://3.210.180.171/phpmyadmin/index.php?route=/sql&server=1&db=TavernMaster&table=FICHA&pos=0
+
+
+Lanza la APi
+http://localhost:8080/
