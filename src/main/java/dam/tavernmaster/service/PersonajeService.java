@@ -84,6 +84,27 @@ public class PersonajeService {
             return personajeRepository.save(personaje);
         });
     }
+
+    // === PATCH: Desvincular campaña ===
+    public Optional<Personaje> desvincularCampana(Integer idPer) {
+        return personajeRepository.findById(idPer).map(personaje -> {
+            personaje.setCampana(null);
+            return personajeRepository.save(personaje);
+        });
+    }
+
+    // === PATCH: Quitar imagen ===
+    public Optional<Personaje> quitarImagen(Integer idPer) {
+        return personajeRepository.findById(idPer).map(personaje -> {
+            personaje.setImagenBase64(null);
+            return personajeRepository.save(personaje);
+        });
+    }
+
+    // === DELETE: Por jugador padre ===
+    public void deletePersonajesByJugadorPadre(String jugadorPadre) {
+        personajeRepository.deleteByJugadorPadre(jugadorPadre);
+    }
 }
 
 // NOTAS MENTALES:

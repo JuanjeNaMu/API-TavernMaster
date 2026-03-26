@@ -28,6 +28,9 @@ public interface JugadorRepository extends JpaRepository<Jugador, Integer> {
     Optional<Jugador> findByEmailIgnoreCase(String email);
     // Busca un jugador por email exacto
 
+    boolean existsByNombreJugIgnoreCase(String nombreJug);
+    boolean existsByEmailIgnoreCase(String email);
+
     List<Jugador> findByEmailContainingIgnoreCase(String email);
     // Busca jugadores que contengan ese texto en el email
 

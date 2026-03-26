@@ -65,46 +65,7 @@ public class CampanaController {
         return campanaService.getCampanasByMaster(master);
     }
 
-    // === GET: Por fecha (próxima sesión) ===
-    @GetMapping("/proxima-sesion/after")
-    public List<Campana> obtenerProximaSesionAfter(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-        // GET a /api/campanas/proxima-sesion/after?fecha=2025-03-15
-        // Busca campañas con próxima sesión después de esa fecha
-        return campanaService.getCampanasByProximaSesionAfter(fecha);
-    }
 
-    @GetMapping("/proxima-sesion/between")
-    public List<Campana> obtenerProximaSesionBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-        // GET a /api/campanas/proxima-sesion/between?start=2025-03-01&end=2025-03-31
-        // Busca campañas con próxima sesión entre esas fechas
-        return campanaService.getCampanasByProximaSesionBetween(start, end);
-    }
-
-    @GetMapping("/proxima-sesion/null")
-    public List<Campana> obtenerSinProximaSesion() {
-        // GET a /api/campanas/proxima-sesion/null
-        // Campañas que no tienen próxima sesión programada
-        return campanaService.getCampanasSinProximaSesion();
-    }
-
-    @GetMapping("/proxima-sesion/not-null")
-    public List<Campana> obtenerConProximaSesion() {
-        // GET a /api/campanas/proxima-sesion/not-null
-        // Campañas que SÍ tienen próxima sesión programada
-        return campanaService.getCampanasConProximaSesion();
-    }
-
-    // === GET: Por encuentros ===
-
-    @GetMapping("/encuentros/{valor}")
-    public List<Campana> obtenerPorEncuentros(@PathVariable Integer valor) {
-        // GET a /api/campanas/encuentros/10
-        // Busca campañas con exactamente 10 encuentros
-        return campanaService.getCampanasByEncuentros(valor);
-    }
 
     // === POST: Crear ===
     @PostMapping
@@ -156,5 +117,11 @@ public class CampanaController {
         // GET a /api/campanas/estadisticas/master
         // Devuelve cuántas campañas ha hecho cada master
         return campanaService.getCampanasCountByMaster();
+    }
+
+    // === GET: Por participante ===
+    @GetMapping("/participante/{nombreJug}")
+    public List<Campana> obtenerPorParticipante(@PathVariable String nombreJug) {
+        return campanaService.getCampanasByParticipante(nombreJug);
     }
 }

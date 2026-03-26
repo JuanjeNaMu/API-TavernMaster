@@ -14,6 +14,10 @@ public interface PersonajeRepository extends JpaRepository<Personaje, Integer> {
 
     // Buscar por jugador padre
     List<Personaje> findByJugadorPadre(String jugadorPadre);
+    
+    // Borrar todos los personajes de un jugador
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByJugadorPadre(String jugadorPadre);
     // SELECT * FROM personaje WHERE jugador_padre = :jugadorPadre
     // Devuelve todos los personajes de un jugador específico
 

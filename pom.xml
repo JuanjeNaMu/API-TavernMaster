@@ -41,15 +41,7 @@
 			<scope>test</scope>
 		</dependency>
 
-        <!-- Flyway para migraciones de BBDD -->
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-mysql</artifactId>
-        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.security</groupId>

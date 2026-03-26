@@ -50,30 +50,7 @@ public class CampanaService {
         return campanaRepository.findByMasterContainingIgnoreCase(master);
     }
 
-    // === GET: Por fecha (próxima sesión) ===
-    public List<Campana> getCampanasByProximaSesionAfter(LocalDate fecha) {
-        return campanaRepository.findByProximaSesionAfter(fecha);
-    }
 
-    public List<Campana> getCampanasByProximaSesionBetween(LocalDate start, LocalDate end) {
-        return campanaRepository.findByProximaSesionBetween(start, end);
-    }
-
-    public List<Campana> getCampanasSinProximaSesion() {
-        // Campañas sin fecha programada
-        return campanaRepository.findByProximaSesionIsNull();
-    }
-
-    public List<Campana> getCampanasConProximaSesion() {
-        // Campañas que ya tienen fecha
-        return campanaRepository.findByProximaSesionIsNotNull();
-    }
-
-    // === GET: Por encuentros ===
-    public List<Campana> getCampanasByEncuentros(Integer valor) {
-        // Campañas con exactamente X encuentros
-        return campanaRepository.findByEncuentros(valor);
-    }
 
     // === POST: Crear ===
     public Campana saveCampana(Campana campana) {
@@ -115,6 +92,11 @@ public class CampanaService {
         // Devuelve cuántas campañas ha hecho cada master
         // El repository devuelve Object[], habría que mapearlo si quiero un DTO
         return campanaRepository.countCampanasByMaster();
+    }
+
+    // === GET: Por participante ===
+    public List<Campana> getCampanasByParticipante(String jugadorPadre) {
+        return campanaRepository.findCampanasByParticipante(jugadorPadre);
     }
 }
 

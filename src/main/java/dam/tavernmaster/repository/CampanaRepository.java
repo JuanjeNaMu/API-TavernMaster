@@ -25,25 +25,7 @@ public interface CampanaRepository extends JpaRepository<Campana, Integer> {
     List<Campana> findByMasterContainingIgnoreCase(String master);
     // SELECT * FROM campana WHERE master LIKE %:master%
 
-    // === Buscar por próxima sesión ===
-    List<Campana> findByProximaSesionAfter(LocalDate fecha);
-    // SELECT * FROM campana WHERE proxima_sesion > :fecha
-
-    List<Campana> findByProximaSesionBetween(LocalDate start, LocalDate end);
-    // SELECT * FROM campana WHERE proxima_sesion BETWEEN :start AND :end
-
-    List<Campana> findByProximaSesionIsNull();
-    // SELECT * FROM campana WHERE proxima_sesion IS NULL
-
-    List<Campana> findByProximaSesionIsNotNull();
-    // SELECT * FROM campana WHERE proxima_sesion IS NOT NULL
-
     // === Buscar por encuentros ===
-    List<Campana> findByEncuentros(Integer encuentros);
-    // SELECT * FROM campana WHERE encuentros = :encuentros
-
-    List<Campana> findByEncuentrosGreaterThan(Integer encuentros);
-    // SELECT * FROM campana WHERE encuentros > :encuentros
 
     // === Con personajes (JOIN FETCH) ===
     @Query("SELECT c FROM Campana c LEFT JOIN FETCH c.personajes WHERE c.idCam = :idCam")
@@ -55,6 +37,10 @@ public interface CampanaRepository extends JpaRepository<Campana, Integer> {
     @Query("SELECT c.master, COUNT(c) FROM Campana c GROUP BY c.master")
     List<Object[]> countCampanasByMaster();
     // Devuelve una lista de arrays [master, total_campañas]
+
+    // === Buscar por jugador participante ===
+    @Query("SELECT DISTINCT c FROM Campana c JOIN c.personajes p WHERE p.jugadorPadre = :jugadorPadre")
+    List<Campana> findCampanasByParticipante(@Param("jugadorPadre") String jugadorPadre);
 
 }
 

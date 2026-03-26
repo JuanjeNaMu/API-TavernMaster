@@ -104,4 +104,27 @@ public class PersonajeController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // === PATCH: Desvincular campaña ===
+    @PatchMapping("/{idPer}/desvincular-campana")
+    public ResponseEntity<Personaje> desvincularCampana(@PathVariable Integer idPer) {
+        return personajeService.desvincularCampana(idPer)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // === PATCH: Quitar imagen ===
+    @PatchMapping("/{idPer}/quitar-imagen")
+    public ResponseEntity<Personaje> quitarImagen(@PathVariable Integer idPer) {
+        return personajeService.quitarImagen(idPer)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // === DELETE: Eliminar por jugador padre ===
+    @DeleteMapping("/jugador/{nombreJug}")
+    public ResponseEntity<Void> eliminarPorJugadorPadre(@PathVariable String nombreJug) {
+        personajeService.deletePersonajesByJugadorPadre(nombreJug);
+        return ResponseEntity.noContent().build();
+    }
 }

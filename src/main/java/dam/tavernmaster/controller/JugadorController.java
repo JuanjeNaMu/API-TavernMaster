@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/jugadores")
@@ -161,12 +163,19 @@ public class JugadorController {
 
     // === POST: Crear ===
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Jugador crear(@RequestBody Jugador jugador) {
-        // POST a /api/jugadores
-        // Body: JSON con los datos del nuevo jugador
-        // Guarda un jugador nuevo
-        return jugadorService.saveJugador(jugador);
+    public ResponseEntity<?> crear(@RequestBody Jugador jugador) {
+        try {
+            Jugador creado = jugadorService.saveJugador(jugador);
+            return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        } catch (IllegalStateException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
     }
 
     // === PUT: Actualizar ===

@@ -29,6 +29,28 @@ public class JugadorService {
 
     // === CRUD BÁSICO ===
     public Jugador saveJugador(Jugador jugador) {
+        if (jugador == null) {
+            throw new IllegalArgumentException("El cuerpo de jugador no puede estar vacio");
+        }
+        if (jugador.getNombreJug() == null || jugador.getNombreJug().isBlank()) {
+            throw new IllegalArgumentException("El nombre de usuario es obligatorio");
+        }
+        if (jugador.getEmail() == null || jugador.getEmail().isBlank()) {
+            throw new IllegalArgumentException("El email es obligatorio");
+        }
+        if (jugador.getPassword() == null || jugador.getPassword().isBlank()) {
+            throw new IllegalArgumentException("La contrasena es obligatoria");
+        }
+        if (jugadorRepository.existsByNombreJugIgnoreCase(jugador.getNombreJug())) {
+            throw new IllegalStateException("El nombre de usuario ya existe");
+        }
+        if (jugadorRepository.existsByEmailIgnoreCase(jugador.getEmail())) {
+            throw new IllegalStateException("El email ya existe");
+        }
+        if (jugador.getEsAdmin() == null) {
+            jugador.setEsAdmin(false);
+        }
+
         // GUARDAR JUGADOR NUEVO
         // Si la contraseña NO parece un hash de bcrypt, la hasheamos
         if (jugador.getPassword() != null && !jugador.getPassword().startsWith("$2")) {
@@ -118,8 +140,17 @@ public class JugadorService {
 
     // === AUTENTICACIÓN ===
     public Optional<Jugador> login(String nombreJug, String password) {
-        // LOGIN: Compara nombre y contraseña ENCRIPTADA
-        return jugadorRepository.login(nombreJug, password);
+        // LOGIN: busca por usuario y valida contra BCrypt (o texto plano legado).
+        return jugadorRepository.findByNombreJugIgnoreCase(nombreJug)
+                .filter(jugador -> {
+                    String stored = jugador.getPassword();
+                    if (stored == null || password == null) return false;
+                    if (stored.startsWith("$2")) {
+                        return passwordEncoder.matches(password, stored);
+                    }
+                    // Compatibilidad con cuentas viejas no hasheadas.
+                    return stored.equals(password);
+                });
     }
 
     // === ACTUALIZACIONES ===
