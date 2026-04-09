@@ -4,19 +4,41 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "fichas")
+@Table(name = "FICHA")
 public class Ficha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_ficha")
+    @com.fasterxml.jackson.annotation.JsonProperty("id_ficha")
     private Integer idFicha;
 
+    @Column(name = "clase")
+    @com.fasterxml.jackson.annotation.JsonProperty("clase")
     private String clase;
+
+    @Column(name = "fuerza")
+    @com.fasterxml.jackson.annotation.JsonProperty("fuerza")
     private Integer fuerza;
+
+    @Column(name = "destreza")
+    @com.fasterxml.jackson.annotation.JsonProperty("destreza")
     private Integer destreza;
+
+    @Column(name = "constitucion")
+    @com.fasterxml.jackson.annotation.JsonProperty("constitucion")
     private Integer constitucion;
+
+    @Column(name = "inteligencia")
+    @com.fasterxml.jackson.annotation.JsonProperty("inteligencia")
     private Integer inteligencia;
+
+    @Column(name = "sabiduria")
+    @com.fasterxml.jackson.annotation.JsonProperty("sabiduria")
     private Integer sabiduria;
+
+    @Column(name = "carisma")
+    @com.fasterxml.jackson.annotation.JsonProperty("carisma")
     private Integer carisma;
 
     // You might also want to add other common attributes like:

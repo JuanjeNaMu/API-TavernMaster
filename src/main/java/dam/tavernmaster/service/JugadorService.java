@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class JugadorService {
 
     // CAPA SERVICE
@@ -28,6 +27,7 @@ public class JugadorService {
     // Inyecto el encriptador que configuré en SecurityConfig
 
     // === CRUD BÁSICO ===
+    @Transactional
     public Jugador saveJugador(Jugador jugador) {
         if (jugador == null) {
             throw new IllegalArgumentException("El cuerpo de jugador no puede estar vacio");
@@ -154,6 +154,7 @@ public class JugadorService {
     }
 
     // === ACTUALIZACIONES ===
+    @Transactional
     public Optional<Jugador> updateJugador(Integer id, Jugador jugadorDetails) {
         // Actualiza un jugador existente
         return jugadorRepository.findById(id).map(jugador -> {
@@ -200,4 +201,5 @@ public class JugadorService {
 // - El login compara el hash de la BD con el hash de lo que escribió el usuario
 // - startsWith("$2") es la forma de saber si una contraseña YA está encriptada
 // - Si no hago esa comprobación, al actualizar puedo encriptar algo que ya está encriptado
-// - @Transactional asegura que todas las operaciones se hagan en una misma transacción
+// - @Transactional solo en métodos que escriben o combinan varias lecturas/escrituras;
+//   el login es solo lectura y no debe ir envuelto en una transacción de servicio (evita commits con conexión ya cerrada hacia MySQL remoto).

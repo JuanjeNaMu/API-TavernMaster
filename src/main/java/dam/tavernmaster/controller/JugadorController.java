@@ -153,9 +153,13 @@ public class JugadorController {
 
     // === POST: Login ===
     @PostMapping("/login")
-    public ResponseEntity<Jugador> login(@RequestParam String nombreJug, @RequestParam String password) {
-        // POST a /api/jugadores/login?nombreJug=Carlos&password=1234
-        // Autentica al usuario con nombre y contraseña
+    public ResponseEntity<Jugador> login(@RequestBody Map<String, String> credenciales) {
+        String nombreJug = credenciales.get("nombreJug");
+        String password = credenciales.get("password");
+        if(nombreJug == null || password == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        
+        // POST a /api/jugadores/login (Cuerpo con JSON {})
+        // Autentica al usuario con nombre y contraseña segura
         return jugadorService.login(nombreJug, password)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
@@ -165,6 +169,11 @@ public class JugadorController {
     @PostMapping
     public ResponseEntity<?> crear(@RequestBody Jugador jugador) {
         try {
+            System.out.println("== INTENTO DE REGISTRO RECIBIDO ==");
+            System.out.println("NombreJug recibido: [" + jugador.getNombreJug() + "]");
+            System.out.println("Email recibido: [" + jugador.getEmail() + "]");
+            System.out.println("ID recibido: [" + jugador.getId() + "]");
+            
             Jugador creado = jugadorService.saveJugador(jugador);
             return ResponseEntity.status(HttpStatus.CREATED).body(creado);
         } catch (IllegalStateException e) {
