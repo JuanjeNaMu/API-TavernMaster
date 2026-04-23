@@ -264,7 +264,7 @@
             margin-bottom: 8px;
         }
         .modal-ficha {
-            max-width: 1080px;
+            max-width: 1140px;
             background: #262422;
             border: 1px solid #5a5450;
         }
@@ -315,18 +315,37 @@
             background: #2a2826;
             border: 1px solid #5a5450;
             border-radius: 8px;
-            padding: 8px;
+            padding: 10px 12px;
             margin-bottom: 8px;
         }
         .ataque-admin-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
+        .ataque-admin-info {
+            display: flex;
+            align-items: center;
             gap: 8px;
+            min-width: 0;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .ataque-admin-nombre {
+            font-weight: 700;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .ataque-sep {
+            opacity: .65;
         }
         .ataque-admin-actions {
             display: flex;
             gap: 6px;
+            flex: 0 0 auto;
         }
         .ataque-form-grid {
             display: grid;

@@ -762,9 +762,11 @@ function renderFichaSeleccionada(errorMensaje = '') {
             return `
                 <div class="ataque-admin-item">
                     <div class="ataque-admin-top">
-                        <div>
-                            <strong>${nombre}</strong>
-                            (<span class="ataque-atributo">${caracteristica}</span>)
+                        <div class="ataque-admin-info">
+                            <span class="ataque-admin-nombre">${nombre}</span>
+                            <span class="ataque-sep">|</span>
+                            <span class="ataque-atributo">${caracteristica}</span>
+                            <span class="ataque-sep">|</span>
                             <span class="estado-comp ${estadoClase}">${estadoTexto}</span>
                         </div>
                         <div class="ataque-admin-actions">
