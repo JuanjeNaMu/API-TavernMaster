@@ -219,10 +219,23 @@
         .close:hover {
             color: white;
         }
+        .top-right {
+            text-align: right;
+            margin-bottom: 14px;
+        }
+        .admin-badge {
+            color: #bdc3c7;
+            margin-right: 12px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="appContainer" style="display:none;">
+    <div class="top-right">
+        <span id="adminSesion" class="admin-badge"></span>
+        <button type="button" class="btn-danger btn-small" id="btnCerrarSesion">Cerrar sesión</button>
+    </div>
     <h1>🏰 TavernMaster</h1>
     <div class="subtitle">"Tu app para la gestión de Rol" ⚔️</div>
 

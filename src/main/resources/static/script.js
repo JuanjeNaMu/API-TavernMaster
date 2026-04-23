@@ -3,12 +3,27 @@
 // ============================================
 
 const API_BASE = '/api';
+const AUTH_STORAGE_KEY = 'tm_admin_auth';
+let appInicializada = false;
 
 // Inicialización
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializar);
+    document.addEventListener('DOMContentLoaded', bootAplicacion);
 } else {
-    inicializar();
+    bootAplicacion();
+}
+
+function bootAplicacion() {
+    const sesion = sessionStorage.getItem(AUTH_STORAGE_KEY);
+    if (!sesion) {
+        window.location.href = '/login.html';
+        return;
+    }
+    mostrarPanelAplicacion(sesion);
+    if (!appInicializada) {
+        inicializar();
+        appInicializada = true;
+    }
 }
 
 async function inicializar() {
@@ -20,6 +35,22 @@ async function inicializar() {
     ]);
     configurarFormularios();
     cargarSelects();
+}
+
+function configurarAutenticacion() {
+    document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesionAdmin);
+}
+
+function mostrarPanelAplicacion(nombreAdmin) {
+    const app = document.getElementById('appContainer');
+    if (app) app.style.display = 'block';
+    const adminSesion = document.getElementById('adminSesion');
+    if (adminSesion) adminSesion.textContent = `Admin: ${nombreAdmin}`;
+}
+
+function cerrarSesionAdmin() {
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    window.location.href = '/login.html';
 }
 
 // Utilidades

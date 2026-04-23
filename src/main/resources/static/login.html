@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TavernMaster Admin Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
+            color: #ecf0f1;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: #34495e;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.35);
+        }
+        h1 {
+            margin: 0 0 6px 0;
+            color: #e67e22;
+            text-align: center;
+        }
+        .subtitle {
+            color: #bdc3c7;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #2c3e50;
+            color: white;
+            font-size: 14px;
+        }
+        input:focus {
+            outline: 2px solid #e67e22;
+        }
+        button {
+            width: 100%;
+            background: #e67e22;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .auth-error {
+            margin-top: 12px;
+            background: #8e2a2a;
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <h1>🏰 TavernMaster</h1>
+    <div class="subtitle">Acceso de administrador</div>
+    <form id="formLoginAdmin">
+        <div class="form-group">
+            <label for="loginNombreJug">Usuario</label>
+            <input type="text" id="loginNombreJug" placeholder="Nombre de jugador" required>
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Contraseña</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit">Entrar</button>
+    </form>
+    <div id="loginError" class="auth-error"></div>
+</div>
+
+<script>
+    const API_BASE = '/api';
+    const AUTH_STORAGE_KEY = 'tm_admin_auth';
+
+    const sesionActual = sessionStorage.getItem(AUTH_STORAGE_KEY);
+    if (sesionActual) {
+        window.location.href = '/index.html';
+    }
+
+    function mostrarErrorLogin(message) {
+        const box = document.getElementById('loginError');
+        if (!box) return;
+        if (!message) {
+            box.style.display = 'none';
+            box.textContent = '';
+            return;
+        }
+        box.style.display = 'block';
+        box.textContent = message;
+    }
+
+    async function loginAdmin() {
+        const nombreJug = document.getElementById('loginNombreJug')?.value?.trim();
+        const password = document.getElementById('loginPassword')?.value ?? '';
+        if (!nombreJug || !password) {
+            mostrarErrorLogin('Introduce usuario y contraseña');
+            return;
+        }
+
+        const response = await fetch(`${API_BASE}/jugadores/login`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ nombreJug, password })
+        });
+
+        if (!response.ok) {
+            mostrarErrorLogin('Usuario o contraseña incorrectos');
+            return;
+        }
+
+        const jugador = await response.json();
+        const esAdmin = (jugador.es_admin ?? jugador.esAdmin) === true;
+        if (!esAdmin) {
+            mostrarErrorLogin('Solo los administradores pueden acceder');
+            return;
+        }
+
+        const nombreAdmin = jugador.nombre_jug || jugador.nombreJug || nombreJug;
+        sessionStorage.setItem(AUTH_STORAGE_KEY, nombreAdmin);
+        window.location.href = '/index.html';
+    }
+
+    document.getElementById('formLoginAdmin')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await loginAdmin();
+    });
+</script>
+</body>
+</html>
