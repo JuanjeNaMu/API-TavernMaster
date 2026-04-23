@@ -15,7 +15,8 @@ async function inicializar() {
     await Promise.all([
         cargarJugadores(),
         cargarPersonajes(),
-        cargarCampanas()
+        cargarCampanas(),
+        cargarFichasConAtaques()
     ]);
     configurarFormularios();
     cargarSelects();
@@ -53,14 +54,21 @@ function mostrarJugadores(jugadores) {
     const tbody = document.getElementById('JugadoresBody');
     if (!tbody) return;
 
-    tbody.innerHTML = jugadores.map(j => `
+    tbody.innerHTML = jugadores.map(j => {
+        const nombre = j.nombre_jug || j.nombreJug || '-';
+        const esAdmin = (j.es_admin ?? j.esAdmin) === true;
+        const sexo = j.sexo || '-';
+        const fechaNacRaw = j.fecha_nac || j.fechaNac;
+        const fechaNac = fechaNacRaw ? new Date(fechaNacRaw).toLocaleDateString('es-ES') : '-';
+
+        return `
         <tr>
             <td><strong>${j.id}</strong></td>
-            <td><strong>${j.nombreJug || '-'}</strong></td>
+            <td><strong>${nombre}</strong></td>
             <td>${j.email || '-'}</td>
-            <td>${j.esAdmin ? '<span class="badge badge-admin">👑 Admin</span>' : '<span class="badge badge-user">👤 Jugador</span>'}</td>
-            <td>${j.sexo || '-'}</td>
-            <td>${j.fechaNac ? new Date(j.fechaNac).toLocaleDateString('es-ES') : '-'}</td>
+            <td>${esAdmin ? '<span class="badge badge-admin">👑 Admin</span>' : '<span class="badge badge-user">👤 Jugador</span>'}</td>
+            <td>${sexo}</td>
+            <td>${fechaNac}</td>
             <td>
                 <div class="action-buttons">
                     <button class="btn-small btn-warning" onclick="cargarJugadorParaEditar(${j.id})">✏️</button>
@@ -68,17 +76,18 @@ function mostrarJugadores(jugadores) {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 async function insertarJugador() {
     const data = {
-        nombreJug: document.getElementById('insertJugadorNombre').value,
+        nombre_jug: document.getElementById('insertJugadorNombre').value,
         password: document.getElementById('insertJugadorPassword').value,
         email: document.getElementById('insertJugadorEmail').value,
-        fechaNac: document.getElementById('insertJugadorFechaNac').value || null,
+        fecha_nac: document.getElementById('insertJugadorFechaNac').value || null,
         sexo: document.getElementById('insertJugadorSexo').value || null,
-        esAdmin: document.getElementById('insertJugadorAdmin').value === 'true'
+        es_admin: document.getElementById('insertJugadorAdmin').value === 'true'
     };
 
     const response = await fetch(`${API_BASE}/jugadores`, {
@@ -108,12 +117,13 @@ window.cargarJugadorParaEditar = async function(id) {
     const j = await response.json();
 
     document.getElementById('editJugadorId').value = j.id;
-    document.getElementById('editJugadorNombre').value = j.nombreJug || '';
+    document.getElementById('editJugadorNombre').value = j.nombre_jug || j.nombreJug || '';
     document.getElementById('editJugadorEmail').value = j.email || '';
     document.getElementById('editJugadorPassword').value = '';
-    document.getElementById('editJugadorFechaNac').value = j.fechaNac ? j.fechaNac.split('T')[0] : '';
+    const fechaNac = j.fecha_nac || j.fechaNac;
+    document.getElementById('editJugadorFechaNac').value = fechaNac ? fechaNac.split('T')[0] : '';
     document.getElementById('editJugadorSexo').value = j.sexo || '';
-    document.getElementById('editJugadorAdmin').value = j.esAdmin ? 'true' : 'false';
+    document.getElementById('editJugadorAdmin').value = (j.es_admin ?? j.esAdmin) ? 'true' : 'false';
 
     document.getElementById('modalEditarJugador').style.display = 'block';
 }
@@ -121,11 +131,11 @@ window.cargarJugadorParaEditar = async function(id) {
 async function actualizarJugador() {
     const id = document.getElementById('editJugadorId').value;
     const data = {
-        nombreJug: document.getElementById('editJugadorNombre').value,
+        nombre_jug: document.getElementById('editJugadorNombre').value,
         email: document.getElementById('editJugadorEmail').value,
-        fechaNac: document.getElementById('editJugadorFechaNac').value || null,
+        fecha_nac: document.getElementById('editJugadorFechaNac').value || null,
         sexo: document.getElementById('editJugadorSexo').value || null,
-        esAdmin: document.getElementById('editJugadorAdmin').value === 'true'
+        es_admin: document.getElementById('editJugadorAdmin').value === 'true'
     };
 
     const password = document.getElementById('editJugadorPassword').value;
@@ -182,6 +192,7 @@ async function cargarPersonajes() {
     console.log('📥 Personajes recibidos:', personajes);
     mostrarPersonajes(personajes);
     document.getElementById('statPersonajes').textContent = personajes.length;
+    await cargarFichasConAtaques();
 }
 
 function mostrarPersonajes(personajes) {
@@ -201,6 +212,11 @@ function mostrarPersonajes(personajes) {
         const nivel = p.nivel || '1';
         const jugadorPadre = p.jugador_padre || p.jugadorPadre || '-';
 
+        const imagenSrc = normalizarImagenBase64(p.imagen_base64 || p.imagenBase64);
+        const miniatura = imagenSrc
+            ? `<img src="${imagenSrc}" alt="Miniatura ${nombrePer}" class="imagen-thumb">`
+            : '-';
+
         return `
             <tr>
                 <td><strong>${idPer}</strong></td>
@@ -208,7 +224,7 @@ function mostrarPersonajes(personajes) {
                 <td>${nivel}</td>
                 <td>${jugadorPadre}</td>
                 <td>${idCam}</td>
-                <td>${p.imagen_base64 || p.imagenBase64 ? '🖼️' : '-'}</td>
+                <td>${miniatura}</td>
                 <td>
                     <div class="action-buttons">
                         <button class="btn-small btn-warning" onclick="cargarPersonajeParaEditar(${idPer})">✏️</button>
@@ -218,6 +234,14 @@ function mostrarPersonajes(personajes) {
             </tr>
         `;
     }).join('');
+}
+
+function normalizarImagenBase64(valor) {
+    if (!valor || typeof valor !== 'string') return null;
+    const texto = valor.trim();
+    if (!texto) return null;
+    if (texto.startsWith('data:image/')) return texto;
+    return `data:image/png;base64,${texto}`;
 }
 
 async function insertarPersonaje() {
@@ -340,6 +364,7 @@ window.borrarPersonaje = async function(id) {
     if (response.ok) {
         alert('✅ Personaje borrado');
         await cargarPersonajes();
+        await cargarFichasConAtaques();
         document.getElementById('editarPersonajeId').value = '';
     } else {
         const error = await response.text();
@@ -494,13 +519,75 @@ window.borrarCampanaPorId = function(id) {
 }
 
 // ============================================
+// FICHAS + ATAQUES
+// ============================================
+async function cargarFichasConAtaques() {
+    const tbody = document.getElementById('FichasAtaquesBody');
+    if (!tbody) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/fichas/con-ataques`);
+        if (!response.ok) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No se pudieron cargar fichas y ataques</td></tr>';
+            return;
+        }
+
+        const fichas = await response.json();
+        mostrarFichasConAtaques(fichas);
+    } catch (error) {
+        console.error('Error cargando fichas con ataques:', error);
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error al cargar fichas y ataques</td></tr>';
+    }
+}
+
+function mostrarFichasConAtaques(fichas) {
+    const tbody = document.getElementById('FichasAtaquesBody');
+    if (!tbody) return;
+
+    if (!Array.isArray(fichas) || fichas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay fichas disponibles</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = fichas.map(ficha => {
+        const atributos = [
+            `FUE ${ficha.fuerza ?? '-'}`,
+            `DES ${ficha.destreza ?? '-'}`,
+            `CON ${ficha.constitucion ?? '-'}`,
+            `INT ${ficha.inteligencia ?? '-'}`,
+            `SAB ${ficha.sabiduria ?? '-'}`,
+            `CAR ${ficha.carisma ?? '-'}`
+        ].join(' | ');
+
+        const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
+        const ataquesTexto = ataques.length
+            ? ataques.map(a => `${a.nombre || 'Sin nombre'} (${a.caracteristica || '-'})${a.es_competente ? ' [comp.]' : ''}`).join(', ')
+            : 'Sin ataques';
+
+        return `
+            <tr>
+                <td><strong>${ficha.id_ficha ?? '-'}</strong></td>
+                <td>${ficha.id_per ?? 'NULL'}</td>
+                <td>${ficha.clase || '-'}</td>
+                <td>${atributos}</td>
+                <td>${ataquesTexto}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// ============================================
 // SELECTS
 // ============================================
 async function cargarSelects() {
     try {
         const response = await fetch(`${API_BASE}/jugadores`);
         const jugadores = await response.json();
-        const options = jugadores.map(j => `<option value="${j.nombreJug}">`).join('');
+        const options = jugadores
+            .map(j => j.nombre_jug || j.nombreJug)
+            .filter(Boolean)
+            .map(nombre => `<option value="${nombre}">`)
+            .join('');
 
         const datalist1 = document.getElementById('jugadores-list');
         if (datalist1) datalist1.innerHTML = options;

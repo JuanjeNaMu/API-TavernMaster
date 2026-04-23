@@ -2,6 +2,7 @@ package dam.tavernmaster.service;
 
 import dam.tavernmaster.entity.Campana;
 import dam.tavernmaster.entity.Personaje;
+import dam.tavernmaster.repository.AtaqueRepository;
 import dam.tavernmaster.repository.PersonajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class PersonajeService {
 
     @Autowired
     private PersonajeRepository personajeRepository;
+
+    @Autowired
+    private AtaqueRepository ataqueRepository;
 
     // === GET: Todos ===
     public List<Personaje> getAllPersonajes() {
@@ -70,6 +74,7 @@ public class PersonajeService {
     // === DELETE: Eliminar ===
     public void deletePersonaje(Integer idPer) {
         // Borra un personaje de la BD
+        ataqueRepository.deleteByPersonajeIdPer(idPer);
         personajeRepository.deleteById(idPer);
     }
 
@@ -103,6 +108,7 @@ public class PersonajeService {
 
     // === DELETE: Por jugador padre ===
     public void deletePersonajesByJugadorPadre(String jugadorPadre) {
+        ataqueRepository.deleteByPersonajeJugadorPadre(jugadorPadre);
         personajeRepository.deleteByJugadorPadre(jugadorPadre);
     }
 }

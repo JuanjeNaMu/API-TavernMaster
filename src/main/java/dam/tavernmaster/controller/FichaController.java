@@ -1,5 +1,6 @@
 package dam.tavernmaster.controller;
 
+import dam.tavernmaster.dto.FichaConAtaquesDTO;
 import dam.tavernmaster.entity.Ficha;
 import dam.tavernmaster.service.FichaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class FichaController {
     @GetMapping
     public List<Ficha> obtenerTodas() {
         return fichaService.getAllFichas();
+    }
+
+    @GetMapping("/con-ataques")
+    public List<FichaConAtaquesDTO> obtenerFichasConAtaques() {
+        return fichaService.getFichasConAtaques();
     }
 
     @GetMapping("/{idFicha}")
