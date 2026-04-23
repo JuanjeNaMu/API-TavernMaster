@@ -268,21 +268,28 @@
             background: #262422;
             border: 1px solid #5a5450;
         }
-        .modal-ficha.clase-guerrero {
+        .ficha-cabecera-panel {
+            border: 1px solid #5a5450;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            background: #2f2d2b;
+        }
+        .ficha-cabecera-panel.clase-guerrero {
             border-color: #c45c5c;
-            box-shadow: 0 0 0 2px rgba(196, 92, 92, .35), 0 16px 36px rgba(0,0,0,.32);
+            box-shadow: 0 0 0 1px rgba(196, 92, 92, .30);
         }
-        .modal-ficha.clase-explorador {
+        .ficha-cabecera-panel.clase-explorador {
             border-color: #40916c;
-            box-shadow: 0 0 0 2px rgba(64, 145, 108, .35), 0 16px 36px rgba(0,0,0,.32);
+            box-shadow: 0 0 0 1px rgba(64, 145, 108, .30);
         }
-        .modal-ficha.clase-hechicero {
+        .ficha-cabecera-panel.clase-hechicero {
             border-color: #5b8fc4;
-            box-shadow: 0 0 0 2px rgba(91, 143, 196, .35), 0 16px 36px rgba(0,0,0,.32);
+            box-shadow: 0 0 0 1px rgba(91, 143, 196, .30);
         }
-        .modal-ficha.clase-default {
+        .ficha-cabecera-panel.clase-default {
             border-color: #d4b84a;
-            box-shadow: 0 0 0 2px rgba(212, 184, 74, .35), 0 16px 36px rgba(0,0,0,.32);
+            box-shadow: 0 0 0 1px rgba(212, 184, 74, .30);
         }
         .ficha-subtitle {
             color: var(--tm-crema);
@@ -753,10 +760,12 @@
 <div id="modalFichaPersonaje" class="modal">
     <div class="modal-content modal-ficha">
         <span class="close" onclick="cerrarModal('modalFichaPersonaje')">&times;</span>
-        <div class="ficha-header">
-            <h3 id="fichaDetalleTitulo">Ficha de personaje</h3>
+        <div id="fichaCabeceraPanel" class="ficha-cabecera-panel">
+            <div class="ficha-header">
+                <h3 id="fichaDetalleTitulo">Ficha de personaje</h3>
+            </div>
+            <div id="fichaDetalleSubtitulo" class="ficha-subtitle"></div>
         </div>
-        <div id="fichaDetalleSubtitulo" class="ficha-subtitle"></div>
         <div id="fichaDetalleBody" class="ficha-vacio">Selecciona un personaje para ver su ficha.</div>
         <div class="ficha-footer">
             <button type="button" class="btn-warning" id="btnEditarDesdeFicha">Editar personaje</button>
