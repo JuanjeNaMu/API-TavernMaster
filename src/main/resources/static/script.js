@@ -292,6 +292,43 @@ function normalizarImagenBase64(valor) {
     return `data:image/png;base64,${texto}`;
 }
 
+function convertirArchivoABase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const result = String(reader.result || '');
+            const commaIndex = result.indexOf(',');
+            resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+        };
+        reader.onerror = () => reject(new Error('No se pudo leer el archivo de imagen.'));
+        reader.readAsDataURL(file);
+    });
+}
+
+function actualizarPreviewInsercionImagen() {
+    const input = document.getElementById('insertPersonajeImagenFile');
+    const preview = document.getElementById('insertPersonajeImagenPreview');
+    if (!input || !preview) return;
+    const file = input.files?.[0];
+    if (!file) {
+        limpiarPreviewInsercionImagen();
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+        preview.src = String(reader.result || '');
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function limpiarPreviewInsercionImagen() {
+    const preview = document.getElementById('insertPersonajeImagenPreview');
+    if (!preview) return;
+    preview.removeAttribute('src');
+    preview.style.display = 'none';
+}
+
 function obtenerClaseCss(clase) {
     const c = (clase || '').toLowerCase();
     if (c.includes('guerrero')) return 'clase-guerrero';
@@ -306,7 +343,9 @@ async function insertarPersonaje() {
     const clase = document.getElementById('insertPersonajeClase').value?.trim() || '';
     const jugadorPadre = document.getElementById('insertPersonajeJugadorPadre').value;
     const idCam = document.getElementById('insertPersonajeIdCam').value;
-    const imagenBase64 = document.getElementById('insertPersonajeImagen').value || null;
+    const imagenFileInput = document.getElementById('insertPersonajeImagenFile');
+    const imagenSeleccionada = imagenFileInput?.files?.[0] ?? null;
+    const imagenBase64 = imagenSeleccionada ? await convertirArchivoABase64(imagenSeleccionada) : null;
 
     // 🟢 CORREGIDO: Enviar con snake_case 🟢
     const data = {
@@ -337,6 +376,7 @@ async function insertarPersonaje() {
         alert('✅ Personaje insertado');
         document.getElementById('formInsertarPersonaje').reset();
         document.getElementById('insertPersonajeClase').value = '';
+        limpiarPreviewInsercionImagen();
         await cargarPersonajes();
         if (idPerCreado) abrirModalFicha(idPerCreado);
     } else {
@@ -933,6 +973,7 @@ async function cargarSelects() {
 function configurarFormularios() {
     document.getElementById('formInsertarJugador')?.addEventListener('submit', e => { e.preventDefault(); insertarJugador(); });
     document.getElementById('formInsertarPersonaje')?.addEventListener('submit', e => { e.preventDefault(); insertarPersonaje(); });
+    document.getElementById('insertPersonajeImagenFile')?.addEventListener('change', actualizarPreviewInsercionImagen);
     document.getElementById('formInsertarCampana')?.addEventListener('submit', e => { e.preventDefault(); insertarCampana(); });
     document.getElementById('formEditarJugador')?.addEventListener('submit', e => { e.preventDefault(); actualizarJugador(); });
     document.getElementById('formEditarPersonaje')?.addEventListener('submit', e => { e.preventDefault(); actualizarPersonaje(); });

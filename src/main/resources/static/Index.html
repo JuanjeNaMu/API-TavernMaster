@@ -542,8 +542,9 @@
                     <input type="number" id="insertPersonajeIdCam" placeholder="Ej: 1 (opcional)">
                 </div>
                 <div class="form-group">
-                    <label for="insertPersonajeImagen">Imagen (Base64)</label>
-                    <textarea id="insertPersonajeImagen" rows="3" placeholder="Pega aquí la imagen en Base64..."></textarea>
+                    <label for="insertPersonajeImagenFile">Imagen</label>
+                    <input type="file" id="insertPersonajeImagenFile" accept="image/*">
+                    <img id="insertPersonajeImagenPreview" class="imagen-preview" alt="Vista previa imagen personaje" style="display:none;">
                 </div>
                 <button type="submit">Insertar Personaje</button>
             </form>
