@@ -295,8 +295,39 @@
             justify-content: flex-end;
             gap: 8px;
         }
+        .ataque-admin-item {
+            background: #2a2826;
+            border: 1px solid #5a5450;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+        .ataque-admin-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .ataque-admin-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .ataque-form-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr auto;
+            gap: 8px;
+            align-items: end;
+            margin-top: 10px;
+        }
+        .ataque-form-grid input,
+        .ataque-form-grid select {
+            margin: 0;
+        }
         @media (max-width: 900px) {
             .ficha-layout {
+                grid-template-columns: 1fr;
+            }
+            .ataque-form-grid {
                 grid-template-columns: 1fr;
             }
         }

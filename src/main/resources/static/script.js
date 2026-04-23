@@ -10,6 +10,7 @@ let fichasPorId = new Map();
 let personajesCache = [];
 let personajeSeleccionadoFicha = null;
 let quitarImagenEnEdicion = false;
+let ataqueEditandoId = null;
 
 // Inicialización
 if (document.readyState === 'loading') {
@@ -706,6 +707,7 @@ function renderFichaSeleccionada(errorMensaje = '') {
         subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = errorMensaje;
+        ataqueEditandoId = null;
         return;
     }
 
@@ -714,6 +716,7 @@ function renderFichaSeleccionada(errorMensaje = '') {
         subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = 'Pulsa el botón "Ver ficha" en la tabla de personajes.';
+        ataqueEditandoId = null;
         return;
     }
 
@@ -727,19 +730,34 @@ function renderFichaSeleccionada(errorMensaje = '') {
     if (!ficha) {
         body.className = 'ficha-vacio';
         body.textContent = `No hay ficha para el personaje ${nombrePersonaje}.`;
+        ataqueEditandoId = null;
         return;
     }
 
     const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
     const ataquesHtml = ataques.length
-        ? `<ul class="ataques-lista">${ataques.map(a => {
+        ? ataques.map(a => {
             const nombre = a.nombre || 'Sin nombre';
             const caracteristica = a.caracteristica || '-';
             const esCompetente = a.es_competente === true;
             const estadoClase = esCompetente ? 'si' : 'no';
             const estadoTexto = esCompetente ? 'Competente' : 'NoCompetente';
-            return `<li>${nombre} (<span class="ataque-atributo">${caracteristica}</span>) <span class="estado-comp ${estadoClase}">${estadoTexto}</span></li>`;
-        }).join('')}</ul>`
+            return `
+                <div class="ataque-admin-item">
+                    <div class="ataque-admin-top">
+                        <div>
+                            <strong>${nombre}</strong>
+                            (<span class="ataque-atributo">${caracteristica}</span>)
+                            <span class="estado-comp ${estadoClase}">${estadoTexto}</span>
+                        </div>
+                        <div class="ataque-admin-actions">
+                            <button type="button" class="btn-small btn-warning" onclick="editarAtaqueEnFicha(${a.id_ataque})">Editar</button>
+                            <button type="button" class="btn-small btn-danger" onclick="borrarAtaqueEnFicha(${a.id_ataque})">Borrar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('')
         : '<span class="ficha-vacio">Sin ataques</span>';
 
     body.className = '';
@@ -761,9 +779,119 @@ function renderFichaSeleccionada(errorMensaje = '') {
             <div class="ficha-box">
                 <h4>Ataques</h4>
                 ${ataquesHtml}
+                <h4 style="margin-top:14px;">${ataqueEditandoId ? 'Editar ataque' : 'Añadir ataque'}</h4>
+                <div class="ataque-form-grid">
+                    <div>
+                        <label for="atkNombreInput">Nombre</label>
+                        <input id="atkNombreInput" type="text" placeholder="Ej: Espadon">
+                    </div>
+                    <div>
+                        <label for="atkCaracInput">Atributo</label>
+                        <select id="atkCaracInput">
+                            <option value="Fuerza">Fuerza</option>
+                            <option value="Destreza">Destreza</option>
+                            <option value="Constitucion">Constitucion</option>
+                            <option value="Inteligencia">Inteligencia</option>
+                            <option value="Sabiduria">Sabiduria</option>
+                            <option value="Carisma">Carisma</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="atkCompInput">Competencia</label>
+                        <select id="atkCompInput">
+                            <option value="true">Competente</option>
+                            <option value="false">NoCompetente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-success" onclick="guardarAtaqueDesdeFicha()">${ataqueEditandoId ? 'Guardar' : 'Anadir'}</button>
+                        ${ataqueEditandoId ? '<button type="button" class="btn-small" style="margin-top:6px;" onclick="cancelarEdicionAtaque()">Cancelar</button>' : ''}
+                    </div>
+                </div>
             </div>
         </div>
     `;
+
+    if (ataqueEditandoId) {
+        const atk = ataques.find(a => String(a.id_ataque) === String(ataqueEditandoId));
+        if (atk) {
+            const nombreInput = document.getElementById('atkNombreInput');
+            const caracInput = document.getElementById('atkCaracInput');
+            const compInput = document.getElementById('atkCompInput');
+            if (nombreInput) nombreInput.value = atk.nombre || '';
+            if (caracInput) caracInput.value = atk.caracteristica || 'Fuerza';
+            if (compInput) compInput.value = String(atk.es_competente === true);
+        }
+    }
+}
+
+window.editarAtaqueEnFicha = function(idAtaque) {
+    ataqueEditandoId = idAtaque;
+    renderFichaSeleccionada();
+}
+
+window.cancelarEdicionAtaque = function() {
+    ataqueEditandoId = null;
+    renderFichaSeleccionada();
+}
+
+window.guardarAtaqueDesdeFicha = async function() {
+    if (!personajeSeleccionadoFicha) return;
+    const nombre = document.getElementById('atkNombreInput')?.value?.trim();
+    const caracteristica = document.getElementById('atkCaracInput')?.value || 'Fuerza';
+    const esCompetente = (document.getElementById('atkCompInput')?.value || 'true') === 'true';
+
+    if (!nombre) {
+        alert('El nombre del ataque es obligatorio.');
+        return;
+    }
+
+    const payload = {
+        id_per: personajeSeleccionadoFicha,
+        nombre,
+        caracteristica,
+        es_competente: esCompetente
+    };
+
+    const endpoint = ataqueEditandoId ? `${API_BASE}/ataques/${ataqueEditandoId}` : `${API_BASE}/ataques`;
+    const method = ataqueEditandoId ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(endpoint, {
+            method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            alert(`No se pudo guardar el ataque: ${errorText}`);
+            return;
+        }
+        ataqueEditandoId = null;
+        await cargarFichasConAtaques();
+        renderFichaSeleccionada();
+    } catch (e) {
+        alert('Error de red al guardar ataque.');
+    }
+}
+
+window.borrarAtaqueEnFicha = async function(idAtaque) {
+    if (!confirm('¿Seguro que quieres borrar este ataque?')) return;
+    try {
+        const response = await fetch(`${API_BASE}/ataques/${idAtaque}`, { method: 'DELETE' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            alert(`No se pudo borrar el ataque: ${errorText}`);
+            return;
+        }
+        if (String(ataqueEditandoId) === String(idAtaque)) {
+            ataqueEditandoId = null;
+        }
+        await cargarFichasConAtaques();
+        renderFichaSeleccionada();
+    } catch (e) {
+        alert('Error de red al borrar ataque.');
+    }
 }
 
 // ============================================
