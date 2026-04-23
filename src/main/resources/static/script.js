@@ -759,14 +759,12 @@ function renderFichaSeleccionada(errorMensaje = '') {
     body.className = '';
     body.innerHTML = `
         <div class="ficha-root ${claseCss}">
-            <div class="ficha-box" style="margin-bottom: 12px;">
-                <div><strong>Personaje:</strong> ${nombrePersonaje}</div>
-                <div><strong>ID Personaje:</strong> ${idPer}</div>
-                <div><strong>Nivel:</strong> ${nivelPersonaje}</div>
-            </div>
             <div class="ficha-layout">
                 <div class="ficha-box">
                     <h4>Datos de ficha</h4>
+                    <div><strong>Personaje:</strong> ${nombrePersonaje}</div>
+                    <div><strong>ID Personaje:</strong> ${idPer}</div>
+                    <div><strong>Nivel:</strong> ${nivelPersonaje}</div>
                     <div><strong>Clase:</strong> ${ficha.clase || '-'}</div>
                     <div class="ficha-detalle-grid">
                         <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
