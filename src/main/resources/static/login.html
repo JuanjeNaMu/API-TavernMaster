@@ -100,7 +100,7 @@
 
     const sesionActual = sessionStorage.getItem(AUTH_STORAGE_KEY);
     if (sesionActual) {
-        window.location.href = '/index.html';
+        window.location.href = '/Index.html';
     }
 
     function mostrarErrorLogin(message) {
@@ -143,7 +143,7 @@
 
         const nombreAdmin = jugador.nombre_jug || jugador.nombreJug || nombreJug;
         sessionStorage.setItem(AUTH_STORAGE_KEY, nombreAdmin);
-        window.location.href = '/index.html';
+        window.location.href = '/Index.html';
     }
 
     document.getElementById('formLoginAdmin')?.addEventListener('submit', async (e) => {

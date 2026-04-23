@@ -14,9 +14,14 @@ if (document.readyState === 'loading') {
 }
 
 function bootAplicacion() {
+    configurarAutenticacion();
     const sesion = sessionStorage.getItem(AUTH_STORAGE_KEY);
     if (!sesion) {
-        window.location.href = '/login.html';
+        window.location.replace('/login.html');
+        setTimeout(() => {
+            const fallback = document.getElementById('authGuardMessage');
+            if (fallback) fallback.style.display = 'block';
+        }, 900);
         return;
     }
     mostrarPanelAplicacion(sesion);
