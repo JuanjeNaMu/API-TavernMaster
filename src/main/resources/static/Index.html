@@ -32,8 +32,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 24px;
-            background: var(--tm-negro-elevado);
-            border: 1px solid #47423f;
+            background: var(--tm-crema-panel);
+            border: 1px solid #c9bda9;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,.28);
@@ -47,10 +47,10 @@
         }
         td {
             padding: 10px;
-            border-bottom: 1px solid #47423f;
-            color: var(--tm-crema);
+            border-bottom: 1px solid #d6cab7;
+            color: #2b2826;
         }
-        tr:hover { background: #3a3634; }
+        tr:hover { background: #f2eadf; }
         .formulario-container {
             background: var(--tm-negro-elevado);
             border: 1px solid #47423f;
@@ -132,6 +132,13 @@
             border-color: #8f3838;
             color: var(--tm-crema-claro);
         }
+        .personaje-fila {
+            transition: background-color .15s ease;
+        }
+        .clase-guerrero { background: #f3e4e4; }
+        .clase-explorador { background: #e8f2ec; }
+        .clase-hechicero { background: #e4edf5; }
+        .clase-default { background: #f5edd5; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .stats {
@@ -306,35 +313,35 @@
         <span id="adminSesion" class="admin-badge"></span>
         <button type="button" class="btn-danger btn-small" id="btnCerrarSesion">LogOut</button>
     </div>
-    <h1>🏰 TavernMaster</h1>
-    <div class="subtitle">"Tu app para la gestión de Rol" ⚔️</div>
+    <h1>TavernMaster</h1>
+    <div class="subtitle">Tu app para la gestion de rol</div>
 
     <!-- ESTADÍSTICAS -->
     <div class="stats">
         <div class="stat-card">
-            <div>🎮 Jugadores</div>
+            <div>Jugadores</div>
             <div class="stat-number" id="statJugadores">0</div>
         </div>
         <div class="stat-card">
-            <div>⚔️ Personajes</div>
+            <div>Personajes</div>
             <div class="stat-number" id="statPersonajes">0</div>
         </div>
         <div class="stat-card">
-            <div>🏆 Campañas</div>
+            <div>Campanas</div>
             <div class="stat-number" id="statCampanas">0</div>
         </div>
     </div>
 
     <!-- TABS -->
     <div class="tabs">
-        <div class="tab active" data-tab="jugadores" onclick="activarTab('jugadores')">🎮 Jugadores</div>
-        <div class="tab" data-tab="personajes" onclick="activarTab('personajes')">⚔️ Personajes</div>
-        <div class="tab" data-tab="campanas" onclick="activarTab('campanas')">🏆 Campañas</div>
+        <div class="tab active" data-tab="jugadores" onclick="activarTab('jugadores')">Jugadores</div>
+        <div class="tab" data-tab="personajes" onclick="activarTab('personajes')">Personajes</div>
+        <div class="tab" data-tab="campanas" onclick="activarTab('campanas')">Campanas</div>
     </div>
 
     <!-- ============ TAB JUGADORES ============ -->
     <div id="tab-jugadores" class="tab-content active">
-        <h2>🎮 Gestión de Jugadores</h2>
+        <h2>Gestion de Jugadores</h2>
 
         <!-- TABLA JUGADORES -->
         <table id="JugadoresTable">
@@ -354,7 +361,7 @@
 
         <!-- FORMULARIO INSERTAR JUGADOR -->
         <div class="formulario-container">
-            <h3>➕ Insertar Jugador</h3>
+            <h3>Insertar Jugador</h3>
             <form id="formInsertarJugador">
                 <div class="form-group">
                     <label for="insertJugadorNombre">Nombre *</label>
@@ -376,9 +383,9 @@
                     <label for="insertJugadorSexo">Sexo</label>
                     <select id="insertJugadorSexo">
                         <option value="">-- Selecciona --</option>
-                        <option value="Hombre">👨 Hombre</option>
-                        <option value="Mujer">👩 Mujer</option>
-                        <option value="Otro">⚧ Otro</option>
+                        <option value="Hombre">Hombre</option>
+                        <option value="Mujer">Mujer</option>
+                        <option value="Otro">Otro</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -395,14 +402,14 @@
 
         <!-- FORMULARIO EDITAR/BORRAR JUGADOR POR ID - CORREGIDO -->
         <div class="formulario-container">
-            <h3>✏️ Editar / 🗑️ Borrar Jugador por ID</h3>
+            <h3>Editar / Borrar Jugador por ID</h3>
             <div class="form-group">
                 <label for="editarJugadorId">ID del Jugador</label>
                 <input type="number" id="editarJugadorId" placeholder="Ej: 1">
             </div>
             <div class="action-buttons">
-                <button type="button" class="btn-warning" onclick="cargarJugadorParaEditar(document.getElementById('editarJugadorId').value)">✏️ Cargar para Editar</button>
-                <button type="button" class="btn-danger" onclick="borrarJugadorPorId(document.getElementById('editarJugadorId').value)">🗑️ Borrar Jugador</button>
+                <button type="button" class="btn-warning" onclick="cargarJugadorParaEditar(document.getElementById('editarJugadorId').value)">Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarJugadorPorId(document.getElementById('editarJugadorId').value)">Borrar Jugador</button>
             </div>
             <div id="mensajeEditarJugador" class="mensaje"></div>
         </div>
@@ -410,7 +417,7 @@
 
     <!-- ============ TAB PERSONAJES ============ -->
     <div id="tab-personajes" class="tab-content">
-        <h2>⚔️ Gestión de Personajes</h2>
+        <h2>Gestion de Personajes</h2>
 
         <!-- TABLA PERSONAJES -->
         <table id="PersonajesTable">
@@ -432,7 +439,7 @@
 
         <!-- FORMULARIO INSERTAR PERSONAJE -->
         <div class="formulario-container">
-            <h3>➕ Insertar Personaje</h3>
+            <h3>Insertar Personaje</h3>
             <form id="formInsertarPersonaje">
                 <div class="form-group">
                     <label for="insertPersonajeNombre">Nombre *</label>
@@ -466,14 +473,14 @@
 
         <!-- FORMULARIO EDITAR/BORRAR PERSONAJE POR ID - CORREGIDO -->
         <div class="formulario-container">
-            <h3>✏️ Editar / 🗑️ Borrar Personaje por ID</h3>
+            <h3>Editar / Borrar Personaje por ID</h3>
             <div class="form-group">
                 <label for="editarPersonajeId">ID del Personaje</label>
                 <input type="number" id="editarPersonajeId" placeholder="Ej: 1">
             </div>
             <div class="action-buttons">
-                <button type="button" class="btn-warning" onclick="cargarPersonajeParaEditar(document.getElementById('editarPersonajeId').value)">✏️ Cargar para Editar</button>
-                <button type="button" class="btn-danger" onclick="borrarPersonajePorId(document.getElementById('editarPersonajeId').value)">🗑️ Borrar Personaje</button>
+                <button type="button" class="btn-warning" onclick="cargarPersonajeParaEditar(document.getElementById('editarPersonajeId').value)">Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarPersonajePorId(document.getElementById('editarPersonajeId').value)">Borrar Personaje</button>
             </div>
             <div id="mensajeEditarPersonaje" class="mensaje"></div>
         </div>
@@ -482,7 +489,7 @@
 
     <!-- ============ TAB CAMPAÑAS ============ -->
     <div id="tab-campanas" class="tab-content">
-        <h2>🏆 Gestión de Campañas</h2>
+        <h2>Gestion de Campanas</h2>
 
         <!-- TABLA CAMPAÑAS -->
         <table id="CampanasTable">
@@ -501,7 +508,7 @@
 
         <!-- FORMULARIO INSERTAR CAMPAÑA -->
         <div class="formulario-container">
-            <h3>➕ Insertar Campaña</h3>
+            <h3>Insertar Campana</h3>
             <form id="formInsertarCampana">
                 <div class="form-group">
                     <label for="insertCampanaTitulo">Título *</label>
@@ -526,14 +533,14 @@
 
         <!-- FORMULARIO EDITAR/BORRAR CAMPAÑA POR ID - CORREGIDO (ESTE ERA EL PROBLEMA) -->
         <div class="formulario-container">
-            <h3>✏️ Editar / 🗑️ Borrar Campaña por ID</h3>
+            <h3>Editar / Borrar Campana por ID</h3>
             <div class="form-group">
                 <label for="editarCampanaId">ID de la Campaña</label>
                 <input type="number" id="editarCampanaId" placeholder="Ej: 1">
             </div>
             <div class="action-buttons">
-                <button type="button" class="btn-warning" onclick="cargarCampanaParaEditar(document.getElementById('editarCampanaId').value)">✏️ Cargar para Editar</button>
-                <button type="button" class="btn-danger" onclick="borrarCampanaPorId(document.getElementById('editarCampanaId').value)">🗑️ Borrar Campaña</button>
+                <button type="button" class="btn-warning" onclick="cargarCampanaParaEditar(document.getElementById('editarCampanaId').value)">Cargar para Editar</button>
+                <button type="button" class="btn-danger" onclick="borrarCampanaPorId(document.getElementById('editarCampanaId').value)">Borrar Campana</button>
             </div>
             <div id="mensajeEditarCampana" class="mensaje"></div>
         </div>
@@ -544,7 +551,7 @@
 <div id="modalEditarJugador" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModal('modalEditarJugador')">&times;</span>
-        <h3>✏️ Editar Jugador</h3>
+        <h3>Editar Jugador</h3>
         <form id="formEditarJugador">
             <input type="hidden" id="editJugadorId">
             <div class="form-group">
@@ -567,9 +574,9 @@
                 <label for="editJugadorSexo">Sexo</label>
                 <select id="editJugadorSexo">
                     <option value="">-- Selecciona --</option>
-                    <option value="Hombre">👨 Hombre</option>
-                    <option value="Mujer">👩 Mujer</option>
-                    <option value="Otro">⚧ Otro</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Otro">Otro</option>
                 </select>
             </div>
             <div class="form-group">
@@ -579,7 +586,7 @@
                     <option value="true">Sí</option>
                 </select>
             </div>
-            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="submit" class="btn-success">Guardar Cambios</button>
             <button type="button" onclick="cerrarModal('modalEditarJugador')">Cancelar</button>
         </form>
     </div>
@@ -589,7 +596,7 @@
 <div id="modalEditarPersonaje" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModal('modalEditarPersonaje')">&times;</span>
-        <h3>✏️ Editar Personaje</h3>
+        <h3>Editar Personaje</h3>
         <form id="formEditarPersonaje">
             <input type="hidden" id="editPersonajeId">
             <div class="form-group">
@@ -614,10 +621,14 @@
                 <input type="number" id="editPersonajeIdCam" placeholder="Ej: 1">
             </div>
             <div class="form-group">
-                <label for="editPersonajeImagen">Imagen (Base64)</label>
-                <textarea id="editPersonajeImagen" rows="3"></textarea>
+                <label>Imagen actual</label>
+                <img id="editPersonajeImagenPreview" class="imagen-preview" alt="Vista previa personaje" style="display:none;">
+                <div id="editPersonajeImagenVacia" class="ficha-vacio">Este personaje no tiene imagen.</div>
+                <div class="action-buttons" style="margin-top:8px;">
+                    <button type="button" class="btn-danger btn-small" id="btnQuitarImagenPersonaje">Quitar imagen</button>
+                </div>
             </div>
-            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="submit" class="btn-success">Guardar Cambios</button>
             <button type="button" onclick="cerrarModal('modalEditarPersonaje')">Cancelar</button>
         </form>
     </div>
@@ -627,7 +638,7 @@
 <div id="modalEditarCampana" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModal('modalEditarCampana')">&times;</span>
-        <h3>✏️ Editar Campaña</h3>
+        <h3>Editar Campana</h3>
         <form id="formEditarCampana">
             <input type="hidden" id="editCampanaId">
             <div class="form-group">
@@ -646,7 +657,7 @@
                 <label for="editCampanaEncuentros">Encuentros</label>
                 <input type="number" id="editCampanaEncuentros" min="0">
             </div>
-            <button type="submit" class="btn-success">💾 Guardar Cambios</button>
+            <button type="submit" class="btn-success">Guardar Cambios</button>
             <button type="button" onclick="cerrarModal('modalEditarCampana')">Cancelar</button>
         </form>
     </div>

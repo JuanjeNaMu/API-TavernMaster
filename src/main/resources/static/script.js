@@ -9,6 +9,7 @@ let personajesPorId = new Map();
 let fichasPorId = new Map();
 let personajesCache = [];
 let personajeSeleccionadoFicha = null;
+let quitarImagenEnEdicion = false;
 
 // Inicialización
 if (document.readyState === 'loading') {
@@ -48,6 +49,7 @@ async function inicializar() {
 
 function configurarAutenticacion() {
     document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesionAdmin);
+    document.getElementById('btnQuitarImagenPersonaje')?.addEventListener('click', marcarQuitarImagenPersonaje);
     document.getElementById('btnEditarDesdeFicha')?.addEventListener('click', () => {
         if (!personajeSeleccionadoFicha) return;
         cerrarModal('modalFichaPersonaje');
@@ -256,6 +258,7 @@ function mostrarPersonajes(personajes) {
         const idPer = p.id_per || p.id || '?';
         const nombrePer = p.nombre_per || p.nombrePer || '-';
         const clase = fichasPorId.get(idPer)?.clase || '-';
+        const claseCss = obtenerClaseCss(clase);
         const nivel = p.nivel || '1';
         const jugadorPadre = p.jugador_padre || p.jugadorPadre || '-';
 
@@ -265,7 +268,7 @@ function mostrarPersonajes(personajes) {
             : '-';
 
         return `
-            <tr>
+            <tr class="personaje-fila ${claseCss}">
                 <td><strong>${idPer}</strong></td>
                 <td><strong>${nombrePer}</strong></td>
                 <td>${clase}</td>
@@ -291,6 +294,14 @@ function normalizarImagenBase64(valor) {
     if (!texto) return null;
     if (texto.startsWith('data:image/')) return texto;
     return `data:image/png;base64,${texto}`;
+}
+
+function obtenerClaseCss(clase) {
+    const c = (clase || '').toLowerCase();
+    if (c.includes('guerrero')) return 'clase-guerrero';
+    if (c.includes('explorador')) return 'clase-explorador';
+    if (c.includes('hechicero')) return 'clase-hechicero';
+    return 'clase-default';
 }
 
 async function insertarPersonaje() {
@@ -359,8 +370,8 @@ window.cargarPersonajeParaEditar = async function(id) {
 
     const idCam = p.id_cam !== undefined && p.id_cam !== null ? p.id_cam : '';
     document.getElementById('editPersonajeIdCam').value = idCam;
-
-    document.getElementById('editPersonajeImagen').value = p.imagen_base64 || p.imagenBase64 || '';
+    quitarImagenEnEdicion = false;
+    renderImagenEdicionPersonaje(p.imagen_base64 || p.imagenBase64);
     try {
         const fichaResponse = await fetch(`${API_BASE}/fichas/${p.id_per || p.id}`);
         if (fichaResponse.ok) {
@@ -383,14 +394,12 @@ async function actualizarPersonaje() {
     const clase = document.getElementById('editPersonajeClase').value?.trim() || '';
     const jugadorPadre = document.getElementById('editPersonajeJugadorPadre').value;
     const idCam = document.getElementById('editPersonajeIdCam').value;
-    const imagenBase64 = document.getElementById('editPersonajeImagen').value || null;
 
     // 🟢 CORREGIDO: Enviar con snake_case 🟢
     const data = {
         nombre_per: nombrePer,
         nivel: nivel,
-        jugador_padre: jugadorPadre,
-        imagen_base64: imagenBase64
+        jugador_padre: jugadorPadre
     };
 
     if (idCam && idCam !== '') {
@@ -406,6 +415,9 @@ async function actualizarPersonaje() {
     });
 
     if (response.ok) {
+        if (quitarImagenEnEdicion) {
+            await quitarImagenPersonaje(id);
+        }
         if (clase) {
             await actualizarClaseFicha(id, clase);
         }
@@ -416,6 +428,45 @@ async function actualizarPersonaje() {
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
+    }
+}
+
+function marcarQuitarImagenPersonaje() {
+    quitarImagenEnEdicion = true;
+    renderImagenEdicionPersonaje(null);
+}
+
+function renderImagenEdicionPersonaje(base64) {
+    const preview = document.getElementById('editPersonajeImagenPreview');
+    const vacia = document.getElementById('editPersonajeImagenVacia');
+    if (!preview || !vacia) return;
+
+    const src = normalizarImagenBase64(base64);
+    if (!src || quitarImagenEnEdicion) {
+        preview.style.display = 'none';
+        preview.removeAttribute('src');
+        vacia.textContent = quitarImagenEnEdicion
+            ? 'La imagen se eliminará al guardar cambios.'
+            : 'Este personaje no tiene imagen.';
+        vacia.style.display = 'block';
+        return;
+    }
+
+    preview.src = src;
+    preview.style.display = 'block';
+    vacia.style.display = 'none';
+}
+
+async function quitarImagenPersonaje(idPer) {
+    try {
+        const response = await fetch(`${API_BASE}/personajes/${idPer}/quitar-imagen`, {
+            method: 'PATCH'
+        });
+        if (!response.ok) {
+            console.warn(`No se pudo quitar la imagen del personaje ${idPer}`);
+        }
+    } catch (error) {
+        console.error('Error quitando imagen de personaje:', error);
     }
 }
 
