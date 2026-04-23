@@ -51,11 +51,6 @@ async function inicializar() {
 function configurarAutenticacion() {
     document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesionAdmin);
     document.getElementById('btnQuitarImagenPersonaje')?.addEventListener('click', marcarQuitarImagenPersonaje);
-    document.getElementById('btnEditarDesdeFicha')?.addEventListener('click', () => {
-        if (!personajeSeleccionadoFicha) return;
-        cerrarModal('modalFichaPersonaje');
-        cargarPersonajeParaEditar(personajeSeleccionadoFicha);
-    });
 }
 
 function mostrarPanelAplicacion(nombreAdmin) {
@@ -698,33 +693,21 @@ window.abrirModalFicha = function(idPer) {
 
 function renderFichaSeleccionada(errorMensaje = '') {
     const titulo = document.getElementById('fichaDetalleTitulo');
-    const subtitulo = document.getElementById('fichaDetalleSubtitulo');
     const body = document.getElementById('fichaDetalleBody');
-    const modalFicha = document.querySelector('#modalFichaPersonaje .modal-ficha');
-    if (!titulo || !body || !subtitulo) return;
+    if (!titulo || !body) return;
 
     if (errorMensaje) {
         titulo.textContent = 'Ficha del personaje';
-        subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = errorMensaje;
-        if (modalFicha) {
-            modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-            modalFicha.classList.add('clase-default');
-        }
         ataqueEditandoId = null;
         return;
     }
 
     if (!personajeSeleccionadoFicha) {
         titulo.textContent = 'Ficha del personaje';
-        subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = 'Pulsa el botón "Ver ficha" en la tabla de personajes.';
-        if (modalFicha) {
-            modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-            modalFicha.classList.add('clase-default');
-        }
         ataqueEditandoId = null;
         return;
     }
@@ -736,13 +719,7 @@ function renderFichaSeleccionada(errorMensaje = '') {
     const nivelPersonaje = personajeData?.nivel ?? '-';
     const claseCss = obtenerClaseCss(ficha?.clase);
 
-    if (modalFicha) {
-        modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-        modalFicha.classList.add(claseCss);
-    }
-
     titulo.textContent = `Ficha de ${nombrePersonaje}`;
-    subtitulo.textContent = `ID Personaje: ${idPer}`;
 
     if (!ficha) {
         body.className = 'ficha-vacio';
@@ -781,58 +758,64 @@ function renderFichaSeleccionada(errorMensaje = '') {
 
     body.className = '';
     body.innerHTML = `
-        <div class="ficha-box" style="margin-bottom: 12px;">
-            <div><strong>Personaje:</strong> ${nombrePersonaje}</div>
-            <div><strong>ID Personaje:</strong> ${idPer}</div>
-        </div>
-        <div class="ficha-layout">
-            <div class="ficha-box">
-                <h4>Datos de ficha</h4>
+        <div class="ficha-root ${claseCss}">
+            <div class="ficha-box" style="margin-bottom: 12px;">
+                <div><strong>Personaje:</strong> ${nombrePersonaje}</div>
+                <div><strong>ID Personaje:</strong> ${idPer}</div>
                 <div><strong>Nivel:</strong> ${nivelPersonaje}</div>
-                <div><strong>Clase:</strong> ${ficha.clase || '-'}</div>
-                <div class="ficha-detalle-grid">
-                    <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
-                    <div class="ficha-stat"><strong>Destreza</strong>${ficha.destreza ?? '-'}</div>
-                    <div class="ficha-stat"><strong>Constitución</strong>${ficha.constitucion ?? '-'}</div>
-                    <div class="ficha-stat"><strong>Inteligencia</strong>${ficha.inteligencia ?? '-'}</div>
-                    <div class="ficha-stat"><strong>Sabiduría</strong>${ficha.sabiduria ?? '-'}</div>
-                    <div class="ficha-stat"><strong>Carisma</strong>${ficha.carisma ?? '-'}</div>
-                </div>
             </div>
-            <div class="ficha-box">
-                <h4>Ataques</h4>
-                ${ataquesHtml}
-                <h4 style="margin-top:14px;">${ataqueEditandoId ? 'Editar ataque' : 'Añadir ataque'}</h4>
-                <div class="ataque-form-grid">
-                    <div>
-                        <label for="atkNombreInput">Nombre</label>
-                        <input id="atkNombreInput" type="text" placeholder="Ej: Espadon">
+            <div class="ficha-layout">
+                <div class="ficha-box">
+                    <h4>Datos de ficha</h4>
+                    <div><strong>Clase:</strong> ${ficha.clase || '-'}</div>
+                    <div class="ficha-detalle-grid">
+                        <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
+                        <div class="ficha-stat"><strong>Destreza</strong>${ficha.destreza ?? '-'}</div>
+                        <div class="ficha-stat"><strong>Constitución</strong>${ficha.constitucion ?? '-'}</div>
+                        <div class="ficha-stat"><strong>Inteligencia</strong>${ficha.inteligencia ?? '-'}</div>
+                        <div class="ficha-stat"><strong>Sabiduría</strong>${ficha.sabiduria ?? '-'}</div>
+                        <div class="ficha-stat"><strong>Carisma</strong>${ficha.carisma ?? '-'}</div>
                     </div>
-                    <div>
-                        <label for="atkCaracInput">Atributo</label>
-                        <select id="atkCaracInput">
-                            <option value="Fuerza">Fuerza</option>
-                            <option value="Destreza">Destreza</option>
-                            <option value="Constitucion">Constitucion</option>
-                            <option value="Inteligencia">Inteligencia</option>
-                            <option value="Sabiduria">Sabiduria</option>
-                            <option value="Carisma">Carisma</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="atkCompInput">Competencia</label>
-                        <select id="atkCompInput">
-                            <option value="true">Competente</option>
-                            <option value="false">NoCompetente</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="ataque-form-actions">
-                            <button type="button" class="btn-success btn-ataque-save" onclick="guardarAtaqueDesdeFicha()">${ataqueEditandoId ? 'Guardar' : 'Anadir'}</button>
-                            ${ataqueEditandoId ? '<button type="button" class="btn-warning btn-ataque-cancel" onclick="cancelarEdicionAtaque()">Cancelar</button>' : ''}
+                </div>
+                <div class="ficha-box">
+                    <h4>Ataques</h4>
+                    ${ataquesHtml}
+                    <h4 style="margin-top:14px;">${ataqueEditandoId ? 'Editar ataque' : 'Añadir ataque'}</h4>
+                    <div class="ataque-form-grid">
+                        <div>
+                            <label for="atkNombreInput">Nombre</label>
+                            <input id="atkNombreInput" type="text" placeholder="Ej: Espadon">
+                        </div>
+                        <div>
+                            <label for="atkCaracInput">Atributo</label>
+                            <select id="atkCaracInput">
+                                <option value="Fuerza">Fuerza</option>
+                                <option value="Destreza">Destreza</option>
+                                <option value="Constitucion">Constitucion</option>
+                                <option value="Inteligencia">Inteligencia</option>
+                                <option value="Sabiduria">Sabiduria</option>
+                                <option value="Carisma">Carisma</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="atkCompInput">Competencia</label>
+                            <select id="atkCompInput">
+                                <option value="true">Competente</option>
+                                <option value="false">NoCompetente</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="ataque-form-actions">
+                                <button type="button" class="btn-success btn-ataque-save" onclick="guardarAtaqueDesdeFicha()">${ataqueEditandoId ? 'Guardar' : 'Anadir'}</button>
+                                ${ataqueEditandoId ? '<button type="button" class="btn-warning btn-ataque-cancel" onclick="cancelarEdicionAtaque()">Cancelar</button>' : ''}
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="ficha-actions">
+                <button type="button" class="btn-warning" onclick="editarPersonajeDesdeFicha()">Editar personaje</button>
+                <button type="button" onclick="cerrarModal('modalFichaPersonaje')">Cerrar</button>
             </div>
         </div>
     `;
@@ -848,6 +831,12 @@ function renderFichaSeleccionada(errorMensaje = '') {
             if (compInput) compInput.value = String(atk.es_competente === true);
         }
     }
+}
+
+window.editarPersonajeDesdeFicha = function() {
+    if (!personajeSeleccionadoFicha) return;
+    cerrarModal('modalFichaPersonaje');
+    cargarPersonajeParaEditar(personajeSeleccionadoFicha);
 }
 
 window.editarAtaqueEnFicha = function(idAtaque) {

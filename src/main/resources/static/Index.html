@@ -268,22 +268,15 @@
             background: #262422;
             border: 1px solid #5a5450;
         }
-        .modal-ficha.clase-guerrero {
-            border-color: #c45c5c;
-            box-shadow: 0 0 0 2px rgba(196, 92, 92, .30), 0 16px 36px rgba(0,0,0,.32);
+        .ficha-root {
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #5a5450;
         }
-        .modal-ficha.clase-explorador {
-            border-color: #40916c;
-            box-shadow: 0 0 0 2px rgba(64, 145, 108, .30), 0 16px 36px rgba(0,0,0,.32);
-        }
-        .modal-ficha.clase-hechicero {
-            border-color: #5b8fc4;
-            box-shadow: 0 0 0 2px rgba(91, 143, 196, .30), 0 16px 36px rgba(0,0,0,.32);
-        }
-        .modal-ficha.clase-default {
-            border-color: #d4b84a;
-            box-shadow: 0 0 0 2px rgba(212, 184, 74, .30), 0 16px 36px rgba(0,0,0,.32);
-        }
+        .ficha-root.clase-guerrero { background: #3b2b2b; border-color: #c45c5c; }
+        .ficha-root.clase-explorador { background: #25362f; border-color: #40916c; }
+        .ficha-root.clase-hechicero { background: #263440; border-color: #5b8fc4; }
+        .ficha-root.clase-default { background: #3a3424; border-color: #d4b84a; }
         .ficha-subtitle {
             color: var(--tm-crema);
             font-size: 13px;
@@ -305,8 +298,8 @@
             margin: 0 0 10px 0;
             color: var(--tm-crema-panel);
         }
-        .ficha-footer {
-            margin-top: 14px;
+        .ficha-actions {
+            margin-top: 12px;
             display: flex;
             justify-content: flex-end;
             gap: 8px;
@@ -753,15 +746,8 @@
 <div id="modalFichaPersonaje" class="modal">
     <div class="modal-content modal-ficha">
         <span class="close" onclick="cerrarModal('modalFichaPersonaje')">&times;</span>
-        <div class="ficha-header">
-            <h3 id="fichaDetalleTitulo">Ficha de personaje</h3>
-        </div>
-        <div id="fichaDetalleSubtitulo" class="ficha-subtitle"></div>
+        <h3 id="fichaDetalleTitulo">Ficha de personaje</h3>
         <div id="fichaDetalleBody" class="ficha-vacio">Selecciona un personaje para ver su ficha.</div>
-        <div class="ficha-footer">
-            <button type="button" class="btn-warning" id="btnEditarDesdeFicha">Editar personaje</button>
-            <button type="button" onclick="cerrarModal('modalFichaPersonaje')">Cerrar</button>
-        </div>
     </div>
 </div>
 
