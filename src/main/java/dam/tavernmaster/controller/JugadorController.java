@@ -153,16 +153,25 @@ public class JugadorController {
 
     // === POST: Login ===
     @PostMapping("/login")
-    public ResponseEntity<Jugador> login(@RequestBody Map<String, String> credenciales) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credenciales) {
         String nombreJug = credenciales.get("nombreJug");
         String password = credenciales.get("password");
-        if(nombreJug == null || password == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if(nombreJug == null || password == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "nombreJug y password son obligatorios"));
+        }
         
         // POST a /api/jugadores/login (Cuerpo con JSON {})
         // Autentica al usuario con nombre y contraseña segura
         return jugadorService.login(nombreJug, password)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                .map(jugador -> ResponseEntity.ok(Map.of(
+                        "id", jugador.getId(),
+                        "nombre_jug", jugador.getNombreJug(),
+                        "email", jugador.getEmail(),
+                        "es_admin", jugador.getEsAdmin()
+                )))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Usuario o contraseña incorrectos")));
     }
 
     // === POST: Crear ===
