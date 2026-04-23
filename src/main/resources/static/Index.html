@@ -200,15 +200,15 @@
             color: var(--tm-crema-claro);
         }
         .ficha-detalle-panel {
-            background: var(--tm-negro-elevado);
-            border: 1px solid #47423f;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 10px;
+            background: #2a2826;
+            border: 1px solid #5a5450;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 12px;
         }
         .ficha-detalle-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(3, minmax(120px, 1fr));
             gap: 10px;
             margin: 10px 0 16px 0;
         }
@@ -228,6 +228,49 @@
         .ficha-vacio {
             color: var(--tm-crema);
             opacity: .9;
+        }
+        .ficha-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .modal-ficha {
+            max-width: 860px;
+            background: #262422;
+            border: 1px solid #5a5450;
+        }
+        .ficha-subtitle {
+            color: var(--tm-crema);
+            font-size: 13px;
+            opacity: .9;
+            margin-bottom: 12px;
+        }
+        .ficha-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .ficha-box {
+            background: #2f2d2b;
+            border: 1px solid #5a5450;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .ficha-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--tm-crema-panel);
+        }
+        .ficha-footer {
+            margin-top: 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        @media (max-width: 900px) {
+            .ficha-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -414,11 +457,6 @@
             <div id="mensajeEditarPersonaje" class="mensaje"></div>
         </div>
 
-        <h2>🛡️ Fichas y ataques asociados</h2>
-        <div class="ficha-detalle-panel">
-            <div id="fichaDetalleTitulo"><strong>Selecciona un personaje para ver su ficha completa</strong></div>
-            <div id="fichaDetalleBody" class="ficha-vacio">Pulsa el botón "Ver ficha" en la tabla de personajes.</div>
-        </div>
     </div>
 
     <!-- ============ TAB CAMPAÑAS ============ -->
@@ -590,6 +628,22 @@
             <button type="submit" class="btn-success">💾 Guardar Cambios</button>
             <button type="button" onclick="cerrarModal('modalEditarCampana')">Cancelar</button>
         </form>
+    </div>
+</div>
+
+<!-- MODAL FICHA DE PERSONAJE -->
+<div id="modalFichaPersonaje" class="modal">
+    <div class="modal-content modal-ficha">
+        <span class="close" onclick="cerrarModal('modalFichaPersonaje')">&times;</span>
+        <div class="ficha-header">
+            <h3 id="fichaDetalleTitulo">Ficha de personaje</h3>
+        </div>
+        <div id="fichaDetalleSubtitulo" class="ficha-subtitle"></div>
+        <div id="fichaDetalleBody" class="ficha-vacio">Selecciona un personaje para ver su ficha.</div>
+        <div class="ficha-footer">
+            <button type="button" class="btn-warning" id="btnEditarDesdeFicha">Editar personaje</button>
+            <button type="button" onclick="cerrarModal('modalFichaPersonaje')">Cerrar</button>
+        </div>
     </div>
 </div>
 

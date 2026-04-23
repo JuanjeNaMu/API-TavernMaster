@@ -48,6 +48,11 @@ async function inicializar() {
 
 function configurarAutenticacion() {
     document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesionAdmin);
+    document.getElementById('btnEditarDesdeFicha')?.addEventListener('click', () => {
+        if (!personajeSeleccionadoFicha) return;
+        cerrarModal('modalFichaPersonaje');
+        cargarPersonajeParaEditar(personajeSeleccionadoFicha);
+    });
 }
 
 function mostrarPanelAplicacion(nombreAdmin) {
@@ -274,7 +279,7 @@ function mostrarPersonajes(personajes) {
                         <button class="btn-small btn-danger" onclick="borrarPersonaje(${idPer})">🗑️</button>
                     </div>
                 </td>
-                <td><button class="btn-small" type="button" onclick="seleccionarFichaPersonaje(${idPer})">Ver ficha</button></td>
+                <td><button class="btn-small" type="button" onclick="abrirModalFicha(${idPer})">Ver ficha</button></td>
             </tr>
         `;
     }).join('');
@@ -326,7 +331,7 @@ async function insertarPersonaje() {
         document.getElementById('formInsertarPersonaje').reset();
         document.getElementById('insertPersonajeClase').value = '';
         await cargarPersonajes();
-        if (idPerCreado) seleccionarFichaPersonaje(idPerCreado);
+        if (idPerCreado) abrirModalFicha(idPerCreado);
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
@@ -407,7 +412,7 @@ async function actualizarPersonaje() {
         alert('✅ Personaje actualizado');
         cerrarModal('modalEditarPersonaje');
         await cargarPersonajes();
-        seleccionarFichaPersonaje(id);
+        abrirModalFicha(id);
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
@@ -436,7 +441,7 @@ window.borrarPersonaje = async function(id) {
         document.getElementById('editarPersonajeId').value = '';
         if (String(personajeSeleccionadoFicha) === String(id)) {
             personajeSeleccionadoFicha = null;
-            renderFichaSeleccionada();
+            cerrarModal('modalFichaPersonaje');
         }
     } else {
         const error = await response.text();
@@ -598,7 +603,6 @@ async function cargarFichasConAtaques() {
         const response = await fetch(`${API_BASE}/fichas/con-ataques`);
         if (!response.ok) {
             fichasPorId = new Map();
-            renderFichaSeleccionada('No se pudieron cargar fichas y ataques');
             return;
         }
 
@@ -609,14 +613,12 @@ async function cargarFichasConAtaques() {
                 f
             ])
         );
-        renderFichaSeleccionada();
         if (personajesCache.length) {
             mostrarPersonajes(personajesCache);
         }
     } catch (error) {
         console.error('Error cargando fichas con ataques:', error);
         fichasPorId = new Map();
-        renderFichaSeleccionada('Error al cargar fichas y ataques');
     }
 }
 
@@ -636,25 +638,29 @@ async function actualizarClaseFicha(idPersonaje, clase) {
     }
 }
 
-window.seleccionarFichaPersonaje = function(idPer) {
+window.abrirModalFicha = function(idPer) {
     personajeSeleccionadoFicha = idPer;
     renderFichaSeleccionada();
+    document.getElementById('modalFichaPersonaje').style.display = 'block';
 }
 
 function renderFichaSeleccionada(errorMensaje = '') {
     const titulo = document.getElementById('fichaDetalleTitulo');
+    const subtitulo = document.getElementById('fichaDetalleSubtitulo');
     const body = document.getElementById('fichaDetalleBody');
-    if (!titulo || !body) return;
+    if (!titulo || !body || !subtitulo) return;
 
     if (errorMensaje) {
-        titulo.innerHTML = '<strong>Ficha del personaje</strong>';
+        titulo.textContent = 'Ficha del personaje';
+        subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = errorMensaje;
         return;
     }
 
     if (!personajeSeleccionadoFicha) {
-        titulo.innerHTML = '<strong>Selecciona un personaje para ver su ficha completa</strong>';
+        titulo.textContent = 'Ficha del personaje';
+        subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = 'Pulsa el botón "Ver ficha" en la tabla de personajes.';
         return;
@@ -664,7 +670,8 @@ function renderFichaSeleccionada(errorMensaje = '') {
     const ficha = fichasPorId.get(idPer);
     const nombrePersonaje = personajesPorId.get(idPer) || `ID ${idPer}`;
 
-    titulo.innerHTML = `<strong>Ficha de ${nombrePersonaje}</strong>`;
+    titulo.textContent = `Ficha de ${nombrePersonaje}`;
+    subtitulo.textContent = `ID Personaje: ${idPer}`;
 
     if (!ficha) {
         body.className = 'ficha-vacio';
@@ -684,17 +691,25 @@ function renderFichaSeleccionada(errorMensaje = '') {
 
     body.className = '';
     body.innerHTML = `
-        <div><strong>ID ficha:</strong> ${ficha.id_ficha ?? '-'} | <strong>Clase:</strong> ${ficha.clase || '-'}</div>
-        <div class="ficha-detalle-grid">
-            <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
-            <div class="ficha-stat"><strong>Destreza</strong>${ficha.destreza ?? '-'}</div>
-            <div class="ficha-stat"><strong>Constitución</strong>${ficha.constitucion ?? '-'}</div>
-            <div class="ficha-stat"><strong>Inteligencia</strong>${ficha.inteligencia ?? '-'}</div>
-            <div class="ficha-stat"><strong>Sabiduría</strong>${ficha.sabiduria ?? '-'}</div>
-            <div class="ficha-stat"><strong>Carisma</strong>${ficha.carisma ?? '-'}</div>
+        <div class="ficha-layout">
+            <div class="ficha-box">
+                <h4>Datos de ficha</h4>
+                <div><strong>ID ficha:</strong> ${ficha.id_ficha ?? '-'}</div>
+                <div><strong>Clase:</strong> ${ficha.clase || '-'}</div>
+                <div class="ficha-detalle-grid">
+                    <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
+                    <div class="ficha-stat"><strong>Destreza</strong>${ficha.destreza ?? '-'}</div>
+                    <div class="ficha-stat"><strong>Constitución</strong>${ficha.constitucion ?? '-'}</div>
+                    <div class="ficha-stat"><strong>Inteligencia</strong>${ficha.inteligencia ?? '-'}</div>
+                    <div class="ficha-stat"><strong>Sabiduría</strong>${ficha.sabiduria ?? '-'}</div>
+                    <div class="ficha-stat"><strong>Carisma</strong>${ficha.carisma ?? '-'}</div>
+                </div>
+            </div>
+            <div class="ficha-box">
+                <h4>Ataques</h4>
+                ${ataquesHtml}
+            </div>
         </div>
-        <div><strong>Ataques</strong></div>
-        ${ataquesHtml}
     `;
 }
 
