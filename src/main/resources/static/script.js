@@ -564,7 +564,7 @@ async function cargarFichasConAtaques() {
     try {
         const response = await fetch(`${API_BASE}/fichas/con-ataques`);
         if (!response.ok) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No se pudieron cargar fichas y ataques</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No se pudieron cargar fichas y ataques</td></tr>';
             return;
         }
 
@@ -572,7 +572,7 @@ async function cargarFichasConAtaques() {
         mostrarFichasConAtaques(fichas);
     } catch (error) {
         console.error('Error cargando fichas con ataques:', error);
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error al cargar fichas y ataques</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Error al cargar fichas y ataques</td></tr>';
     }
 }
 
@@ -581,31 +581,35 @@ function mostrarFichasConAtaques(fichas) {
     if (!tbody) return;
 
     if (!Array.isArray(fichas) || fichas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay fichas disponibles</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay fichas disponibles</td></tr>';
         return;
     }
 
     tbody.innerHTML = fichas.map(ficha => {
-        const atributos = [
-            `FUE ${ficha.fuerza ?? '-'}`,
-            `DES ${ficha.destreza ?? '-'}`,
-            `CON ${ficha.constitucion ?? '-'}`,
-            `INT ${ficha.inteligencia ?? '-'}`,
-            `SAB ${ficha.sabiduria ?? '-'}`,
-            `CAR ${ficha.carisma ?? '-'}`
-        ].join(' | ');
+        const idFicha = ficha.id_ficha ?? '-';
+        const idPer = ficha.id_per ?? idFicha;
 
         const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
         const ataquesTexto = ataques.length
-            ? ataques.map(a => `${a.nombre || 'Sin nombre'} (${a.caracteristica || '-'})${a.es_competente ? ' [comp.]' : ''}`).join(', ')
+            ? `<ul class="ataques-lista">${ataques.map(a => {
+                const nombre = a.nombre || 'Sin nombre';
+                const caracteristica = a.caracteristica || '-';
+                const competente = a.es_competente ? ' [Comp.]' : '';
+                return `<li>${nombre} (${caracteristica})${competente}</li>`;
+            }).join('')}</ul>`
             : 'Sin ataques';
 
         return `
             <tr>
-                <td><strong>${ficha.id_ficha ?? '-'}</strong></td>
-                <td>${ficha.id_per ?? 'NULL'}</td>
+                <td><strong>${idFicha}</strong></td>
+                <td>${idPer}</td>
                 <td>${ficha.clase || '-'}</td>
-                <td>${atributos}</td>
+                <td>${ficha.fuerza ?? '-'}</td>
+                <td>${ficha.destreza ?? '-'}</td>
+                <td>${ficha.constitucion ?? '-'}</td>
+                <td>${ficha.inteligencia ?? '-'}</td>
+                <td>${ficha.sabiduria ?? '-'}</td>
+                <td>${ficha.carisma ?? '-'}</td>
                 <td>${ataquesTexto}</td>
             </tr>
         `;
