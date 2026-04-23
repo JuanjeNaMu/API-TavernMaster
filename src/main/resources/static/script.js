@@ -6,6 +6,9 @@ const API_BASE = '/api';
 const AUTH_STORAGE_KEY = 'tm_admin_auth';
 let appInicializada = false;
 let personajesPorId = new Map();
+let fichasPorId = new Map();
+let personajesCache = [];
+let personajeSeleccionadoFicha = null;
 
 // Inicialización
 if (document.readyState === 'loading') {
@@ -220,14 +223,15 @@ window.borrarJugadorPorId = function(id) {
 async function cargarPersonajes() {
     const response = await fetch(`${API_BASE}/personajes`);
     const personajes = await response.json();
+    personajesCache = Array.isArray(personajes) ? personajes : [];
     personajesPorId = new Map(
-        (Array.isArray(personajes) ? personajes : []).map(p => [
+        personajesCache.map(p => [
             p.id_per || p.id,
             p.nombre_per || p.nombrePer || '-'
         ])
     );
     console.log('📥 Personajes recibidos:', personajes);
-    mostrarPersonajes(personajes);
+    mostrarPersonajes(personajesCache);
     document.getElementById('statPersonajes').textContent = personajes.length;
     await cargarFichasConAtaques();
 }
@@ -237,7 +241,7 @@ function mostrarPersonajes(personajes) {
     if (!tbody) return;
 
     if (!personajes?.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay personajes</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No hay personajes</td></tr>';
         return;
     }
 
@@ -246,6 +250,7 @@ function mostrarPersonajes(personajes) {
         const idCam = p.id_cam !== undefined && p.id_cam !== null ? p.id_cam : 'NULL';
         const idPer = p.id_per || p.id || '?';
         const nombrePer = p.nombre_per || p.nombrePer || '-';
+        const clase = fichasPorId.get(idPer)?.clase || '-';
         const nivel = p.nivel || '1';
         const jugadorPadre = p.jugador_padre || p.jugadorPadre || '-';
 
@@ -258,6 +263,7 @@ function mostrarPersonajes(personajes) {
             <tr>
                 <td><strong>${idPer}</strong></td>
                 <td><strong>${nombrePer}</strong></td>
+                <td>${clase}</td>
                 <td>${nivel}</td>
                 <td>${jugadorPadre}</td>
                 <td>${idCam}</td>
@@ -268,6 +274,7 @@ function mostrarPersonajes(personajes) {
                         <button class="btn-small btn-danger" onclick="borrarPersonaje(${idPer})">🗑️</button>
                     </div>
                 </td>
+                <td><button class="btn-small" type="button" onclick="seleccionarFichaPersonaje(${idPer})">Ver ficha</button></td>
             </tr>
         `;
     }).join('');
@@ -284,6 +291,7 @@ function normalizarImagenBase64(valor) {
 async function insertarPersonaje() {
     const nombrePer = document.getElementById('insertPersonajeNombre').value;
     const nivel = parseInt(document.getElementById('insertPersonajeNivel').value) || 1;
+    const clase = document.getElementById('insertPersonajeClase').value?.trim() || '';
     const jugadorPadre = document.getElementById('insertPersonajeJugadorPadre').value;
     const idCam = document.getElementById('insertPersonajeIdCam').value;
     const imagenBase64 = document.getElementById('insertPersonajeImagen').value || null;
@@ -309,9 +317,16 @@ async function insertarPersonaje() {
     });
 
     if (response.ok) {
+        const personajeCreado = await response.json();
+        const idPerCreado = personajeCreado?.id_per || personajeCreado?.id;
+        if (clase && idPerCreado) {
+            await actualizarClaseFicha(idPerCreado, clase);
+        }
         alert('✅ Personaje insertado');
         document.getElementById('formInsertarPersonaje').reset();
+        document.getElementById('insertPersonajeClase').value = '';
         await cargarPersonajes();
+        if (idPerCreado) seleccionarFichaPersonaje(idPerCreado);
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
@@ -341,6 +356,17 @@ window.cargarPersonajeParaEditar = async function(id) {
     document.getElementById('editPersonajeIdCam').value = idCam;
 
     document.getElementById('editPersonajeImagen').value = p.imagen_base64 || p.imagenBase64 || '';
+    try {
+        const fichaResponse = await fetch(`${API_BASE}/fichas/${p.id_per || p.id}`);
+        if (fichaResponse.ok) {
+            const ficha = await fichaResponse.json();
+            document.getElementById('editPersonajeClase').value = ficha.clase || '';
+        } else {
+            document.getElementById('editPersonajeClase').value = '';
+        }
+    } catch (e) {
+        document.getElementById('editPersonajeClase').value = '';
+    }
 
     document.getElementById('modalEditarPersonaje').style.display = 'block';
 }
@@ -349,6 +375,7 @@ async function actualizarPersonaje() {
     const id = document.getElementById('editPersonajeId').value;
     const nombrePer = document.getElementById('editPersonajeNombre').value;
     const nivel = parseInt(document.getElementById('editPersonajeNivel').value) || 1;
+    const clase = document.getElementById('editPersonajeClase').value?.trim() || '';
     const jugadorPadre = document.getElementById('editPersonajeJugadorPadre').value;
     const idCam = document.getElementById('editPersonajeIdCam').value;
     const imagenBase64 = document.getElementById('editPersonajeImagen').value || null;
@@ -374,9 +401,13 @@ async function actualizarPersonaje() {
     });
 
     if (response.ok) {
+        if (clase) {
+            await actualizarClaseFicha(id, clase);
+        }
         alert('✅ Personaje actualizado');
         cerrarModal('modalEditarPersonaje');
         await cargarPersonajes();
+        seleccionarFichaPersonaje(id);
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
@@ -403,6 +434,10 @@ window.borrarPersonaje = async function(id) {
         await cargarPersonajes();
         await cargarFichasConAtaques();
         document.getElementById('editarPersonajeId').value = '';
+        if (String(personajeSeleccionadoFicha) === String(id)) {
+            personajeSeleccionadoFicha = null;
+            renderFichaSeleccionada();
+        }
     } else {
         const error = await response.text();
         alert('❌ Error: ' + error);
@@ -559,63 +594,108 @@ window.borrarCampanaPorId = function(id) {
 // FICHAS + ATAQUES
 // ============================================
 async function cargarFichasConAtaques() {
-    const tbody = document.getElementById('FichasAtaquesBody');
-    if (!tbody) return;
-
     try {
         const response = await fetch(`${API_BASE}/fichas/con-ataques`);
         if (!response.ok) {
-            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No se pudieron cargar fichas y ataques</td></tr>';
+            fichasPorId = new Map();
+            renderFichaSeleccionada('No se pudieron cargar fichas y ataques');
             return;
         }
 
         const fichas = await response.json();
-        mostrarFichasConAtaques(fichas);
+        fichasPorId = new Map(
+            (Array.isArray(fichas) ? fichas : []).map(f => [
+                f.id_ficha,
+                f
+            ])
+        );
+        renderFichaSeleccionada();
+        if (personajesCache.length) {
+            mostrarPersonajes(personajesCache);
+        }
     } catch (error) {
         console.error('Error cargando fichas con ataques:', error);
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Error al cargar fichas y ataques</td></tr>';
+        fichasPorId = new Map();
+        renderFichaSeleccionada('Error al cargar fichas y ataques');
     }
 }
 
-function mostrarFichasConAtaques(fichas) {
-    const tbody = document.getElementById('FichasAtaquesBody');
-    if (!tbody) return;
+async function actualizarClaseFicha(idPersonaje, clase) {
+    if (!idPersonaje || !clase) return;
+    try {
+        const response = await fetch(`${API_BASE}/fichas/${idPersonaje}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ clase })
+        });
+        if (!response.ok) {
+            console.warn(`No se pudo actualizar clase de ficha para personaje ${idPersonaje}`);
+        }
+    } catch (error) {
+        console.error('Error actualizando clase de ficha:', error);
+    }
+}
 
-    if (!Array.isArray(fichas) || fichas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No hay fichas disponibles</td></tr>';
+window.seleccionarFichaPersonaje = function(idPer) {
+    personajeSeleccionadoFicha = idPer;
+    renderFichaSeleccionada();
+}
+
+function renderFichaSeleccionada(errorMensaje = '') {
+    const titulo = document.getElementById('fichaDetalleTitulo');
+    const body = document.getElementById('fichaDetalleBody');
+    if (!titulo || !body) return;
+
+    if (errorMensaje) {
+        titulo.innerHTML = '<strong>Ficha del personaje</strong>';
+        body.className = 'ficha-vacio';
+        body.textContent = errorMensaje;
         return;
     }
 
-    tbody.innerHTML = fichas.map(ficha => {
-        const idFicha = ficha.id_ficha ?? '-';
-        const idPer = ficha.id_per ?? idFicha;
-        const nombrePersonaje = personajesPorId.get(idPer) || `ID ${idPer}`;
+    if (!personajeSeleccionadoFicha) {
+        titulo.innerHTML = '<strong>Selecciona un personaje para ver su ficha completa</strong>';
+        body.className = 'ficha-vacio';
+        body.textContent = 'Pulsa el botón "Ver ficha" en la tabla de personajes.';
+        return;
+    }
 
-        const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
-        const ataquesTexto = ataques.length
-            ? `<ul class="ataques-lista">${ataques.map(a => {
-                const nombre = a.nombre || 'Sin nombre';
-                const caracteristica = a.caracteristica || '-';
-                const competente = a.es_competente ? ' [Comp.]' : '';
-                return `<li>${nombre} (${caracteristica})${competente}</li>`;
-            }).join('')}</ul>`
-            : 'Sin ataques';
+    const idPer = personajeSeleccionadoFicha;
+    const ficha = fichasPorId.get(idPer);
+    const nombrePersonaje = personajesPorId.get(idPer) || `ID ${idPer}`;
 
-        return `
-            <tr>
-                <td><strong>${idFicha}</strong></td>
-                <td>${nombrePersonaje}</td>
-                <td>${ficha.clase || '-'}</td>
-                <td>${ficha.fuerza ?? '-'}</td>
-                <td>${ficha.destreza ?? '-'}</td>
-                <td>${ficha.constitucion ?? '-'}</td>
-                <td>${ficha.inteligencia ?? '-'}</td>
-                <td>${ficha.sabiduria ?? '-'}</td>
-                <td>${ficha.carisma ?? '-'}</td>
-                <td>${ataquesTexto}</td>
-            </tr>
-        `;
-    }).join('');
+    titulo.innerHTML = `<strong>Ficha de ${nombrePersonaje}</strong>`;
+
+    if (!ficha) {
+        body.className = 'ficha-vacio';
+        body.textContent = `No hay ficha para el personaje ${nombrePersonaje}.`;
+        return;
+    }
+
+    const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
+    const ataquesHtml = ataques.length
+        ? `<ul class="ataques-lista">${ataques.map(a => {
+            const nombre = a.nombre || 'Sin nombre';
+            const caracteristica = a.caracteristica || '-';
+            const competente = a.es_competente ? ' [Comp.]' : '';
+            return `<li>${nombre} (${caracteristica})${competente}</li>`;
+        }).join('')}</ul>`
+        : '<span class="ficha-vacio">Sin ataques</span>';
+
+    body.className = '';
+    body.innerHTML = `
+        <div><strong>ID ficha:</strong> ${ficha.id_ficha ?? '-'} | <strong>Clase:</strong> ${ficha.clase || '-'}</div>
+        <div class="ficha-detalle-grid">
+            <div class="ficha-stat"><strong>Fuerza</strong>${ficha.fuerza ?? '-'}</div>
+            <div class="ficha-stat"><strong>Destreza</strong>${ficha.destreza ?? '-'}</div>
+            <div class="ficha-stat"><strong>Constitución</strong>${ficha.constitucion ?? '-'}</div>
+            <div class="ficha-stat"><strong>Inteligencia</strong>${ficha.inteligencia ?? '-'}</div>
+            <div class="ficha-stat"><strong>Sabiduría</strong>${ficha.sabiduria ?? '-'}</div>
+            <div class="ficha-stat"><strong>Carisma</strong>${ficha.carisma ?? '-'}</div>
+        </div>
+        <div><strong>Ataques</strong></div>
+        ${ataquesHtml}
+    `;
 }
 
 // ============================================

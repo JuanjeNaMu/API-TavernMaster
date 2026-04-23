@@ -199,6 +199,36 @@
             margin-bottom: 4px;
             color: var(--tm-crema-claro);
         }
+        .ficha-detalle-panel {
+            background: var(--tm-negro-elevado);
+            border: 1px solid #47423f;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .ficha-detalle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 10px 0 16px 0;
+        }
+        .ficha-stat {
+            background: #2a2826;
+            border: 1px solid #5a5450;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .ficha-stat strong {
+            display: block;
+            color: var(--tm-crema-panel);
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        .ficha-vacio {
+            color: var(--tm-crema);
+            opacity: .9;
+        }
     </style>
 </head>
 <body>
@@ -235,7 +265,6 @@
     <div class="tabs">
         <div class="tab active" data-tab="jugadores" onclick="activarTab('jugadores')">🎮 Jugadores</div>
         <div class="tab" data-tab="personajes" onclick="activarTab('personajes')">⚔️ Personajes</div>
-        <div class="tab" data-tab="fichas" onclick="activarTab('fichas')">🛡️ Fichas + Ataques</div>
         <div class="tab" data-tab="campanas" onclick="activarTab('campanas')">🏆 Campañas</div>
     </div>
 
@@ -325,11 +354,13 @@
             <tr>
                 <th>ID_PER</th>
                 <th>Nombre</th>
+                <th>Clase</th>
                 <th>Nivel</th>
                 <th>Jugador Padre</th>
                 <th>ID_CAM</th>
                 <th>Imagen</th>
                 <th>Acciones</th>
+                <th>Ficha</th>
             </tr>
             </thead>
             <tbody id="PersonajesBody"></tbody>
@@ -346,6 +377,10 @@
                 <div class="form-group">
                     <label for="insertPersonajeNivel">Nivel *</label>
                     <input type="number" id="insertPersonajeNivel" value="1" min="1" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="insertPersonajeClase">Clase</label>
+                    <input type="text" id="insertPersonajeClase" placeholder="Ej: Guerrero">
                 </div>
                 <div class="form-group">
                     <label for="insertPersonajeJugadorPadre">Jugador Padre *</label>
@@ -379,28 +414,11 @@
             <div id="mensajeEditarPersonaje" class="mensaje"></div>
         </div>
 
-    </div>
-
-    <!-- ============ TAB FICHAS + ATAQUES ============ -->
-    <div id="tab-fichas" class="tab-content">
         <h2>🛡️ Fichas y ataques asociados</h2>
-        <table id="FichasAtaquesTable">
-            <thead>
-            <tr>
-                <th>ID_FICHA</th>
-                <th>Personaje</th>
-                <th>Clase</th>
-                <th>Fuerza</th>
-                <th>Destreza</th>
-                <th>Constitución</th>
-                <th>Inteligencia</th>
-                <th>Sabiduría</th>
-                <th>Carisma</th>
-                <th>Ataques asociados</th>
-            </tr>
-            </thead>
-            <tbody id="FichasAtaquesBody"></tbody>
-        </table>
+        <div class="ficha-detalle-panel">
+            <div id="fichaDetalleTitulo"><strong>Selecciona un personaje para ver su ficha completa</strong></div>
+            <div id="fichaDetalleBody" class="ficha-vacio">Pulsa el botón "Ver ficha" en la tabla de personajes.</div>
+        </div>
     </div>
 
     <!-- ============ TAB CAMPAÑAS ============ -->
@@ -522,6 +540,10 @@
             <div class="form-group">
                 <label for="editPersonajeNivel">Nivel *</label>
                 <input type="number" id="editPersonajeNivel" min="1" max="20" required>
+            </div>
+            <div class="form-group">
+                <label for="editPersonajeClase">Clase</label>
+                <input type="text" id="editPersonajeClase" placeholder="Ej: Guerrero">
             </div>
             <div class="form-group">
                 <label for="editPersonajeJugadorPadre">Jugador Padre *</label>
