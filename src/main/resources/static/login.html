@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TavernMaster Admin Login</title>
     <style>
+        :root {
+            --tm-negro: #252423;
+            --tm-negro-elevado: #32302e;
+            --tm-rojo: #b84a4a;
+            --tm-rojo-oscuro: #8f3838;
+            --tm-crema: #ede6dc;
+            --tm-crema-claro: #faf7f2;
+        }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c3e50, #1a1a1a);
-            color: #ecf0f1;
+            background: radial-gradient(circle at top, #3a3634 0%, var(--tm-negro) 58%, #1f1e1d 100%);
+            color: var(--tm-crema-claro);
             margin: 0;
             min-height: 100vh;
             display: flex;
@@ -18,59 +27,68 @@
         }
         .login-card {
             width: 100%;
-            max-width: 430px;
-            background: #34495e;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.35);
+            max-width: 440px;
+            background: var(--tm-negro-elevado);
+            border: 1px solid #4f4945;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 16px 36px rgba(0,0,0,.32);
         }
         h1 {
             margin: 0 0 6px 0;
-            color: #e67e22;
+            color: var(--tm-crema-claro);
             text-align: center;
+            letter-spacing: .4px;
         }
         .subtitle {
-            color: #bdc3c7;
+            color: var(--tm-crema);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
+            opacity: .92;
         }
-        .form-group {
-            margin-bottom: 14px;
-        }
+        .form-group { margin-bottom: 14px; }
         label {
             display: block;
             margin-bottom: 6px;
-            color: #e67e22;
-            font-weight: bold;
+            color: var(--tm-crema);
+            font-weight: 600;
         }
         input {
             width: 100%;
-            box-sizing: border-box;
             padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background: #2c3e50;
-            color: white;
+            border: 1px solid #5d5651;
+            border-radius: 8px;
+            background: #2a2826;
+            color: var(--tm-crema-claro);
             font-size: 14px;
         }
         input:focus {
-            outline: 2px solid #e67e22;
+            outline: none;
+            border-color: #d07d7d;
+            box-shadow: 0 0 0 2px rgba(184, 74, 74, .35);
         }
         button {
             width: 100%;
-            background: #e67e22;
-            color: white;
+            background: linear-gradient(180deg, #c45c5c, var(--tm-rojo));
+            color: var(--tm-crema-claro);
             padding: 12px;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid #8f3838;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
+            transition: transform .12s ease, filter .15s ease;
+        }
+        button:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
         }
         .auth-error {
             margin-top: 12px;
-            background: #8e2a2a;
-            color: #fff;
-            border-radius: 6px;
+            background: rgba(143, 56, 56, .3);
+            border: 1px solid var(--tm-rojo-oscuro);
+            color: var(--tm-crema-claro);
+            border-radius: 8px;
             padding: 10px;
             display: none;
         }
