@@ -264,9 +264,25 @@
             margin-bottom: 8px;
         }
         .modal-ficha {
-            max-width: 860px;
+            max-width: 1080px;
             background: #262422;
             border: 1px solid #5a5450;
+        }
+        .modal-ficha.clase-guerrero {
+            border-color: #c45c5c;
+            box-shadow: 0 0 0 2px rgba(196, 92, 92, .35), 0 16px 36px rgba(0,0,0,.32);
+        }
+        .modal-ficha.clase-explorador {
+            border-color: #40916c;
+            box-shadow: 0 0 0 2px rgba(64, 145, 108, .35), 0 16px 36px rgba(0,0,0,.32);
+        }
+        .modal-ficha.clase-hechicero {
+            border-color: #5b8fc4;
+            box-shadow: 0 0 0 2px rgba(91, 143, 196, .35), 0 16px 36px rgba(0,0,0,.32);
+        }
+        .modal-ficha.clase-default {
+            border-color: #d4b84a;
+            box-shadow: 0 0 0 2px rgba(212, 184, 74, .35), 0 16px 36px rgba(0,0,0,.32);
         }
         .ficha-subtitle {
             color: var(--tm-crema);
@@ -318,6 +334,26 @@
             gap: 8px;
             align-items: end;
             margin-top: 10px;
+        }
+        .ataque-form-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .btn-ataque-save {
+            padding: 7px 12px;
+            font-size: 13px;
+            border-radius: 7px;
+            margin-right: 0;
+        }
+        .btn-ataque-cancel {
+            padding: 7px 10px;
+            font-size: 12px;
+            border-radius: 7px;
+            margin-right: 0;
+        }
+        .estado-comp {
+            white-space: nowrap;
         }
         .ataque-form-grid input,
         .ataque-form-grid select {
