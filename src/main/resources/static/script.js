@@ -684,8 +684,10 @@ function renderFichaSeleccionada(errorMensaje = '') {
         ? `<ul class="ataques-lista">${ataques.map(a => {
             const nombre = a.nombre || 'Sin nombre';
             const caracteristica = a.caracteristica || '-';
-            const competente = a.es_competente ? ' [Comp.]' : '';
-            return `<li>${nombre} (${caracteristica})${competente}</li>`;
+            const esCompetente = a.es_competente === true;
+            const estadoClase = esCompetente ? 'si' : 'no';
+            const estadoTexto = esCompetente ? 'Competente' : 'NoCompetente';
+            return `<li>${nombre} (<span class="ataque-atributo">${caracteristica}</span>) <span class="estado-comp ${estadoClase}">${estadoTexto}</span></li>`;
         }).join('')}</ul>`
         : '<span class="ficha-vacio">Sin ataques</span>';
 
