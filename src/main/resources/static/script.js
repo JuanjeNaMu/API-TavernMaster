@@ -700,7 +700,7 @@ function renderFichaSeleccionada(errorMensaje = '') {
     const titulo = document.getElementById('fichaDetalleTitulo');
     const subtitulo = document.getElementById('fichaDetalleSubtitulo');
     const body = document.getElementById('fichaDetalleBody');
-    const cabeceraPanel = document.getElementById('fichaCabeceraPanel');
+    const modalFicha = document.querySelector('#modalFichaPersonaje .modal-ficha');
     if (!titulo || !body || !subtitulo) return;
 
     if (errorMensaje) {
@@ -708,9 +708,9 @@ function renderFichaSeleccionada(errorMensaje = '') {
         subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = errorMensaje;
-        if (cabeceraPanel) {
-            cabeceraPanel.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-            cabeceraPanel.classList.add('clase-default');
+        if (modalFicha) {
+            modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
+            modalFicha.classList.add('clase-default');
         }
         ataqueEditandoId = null;
         return;
@@ -721,9 +721,9 @@ function renderFichaSeleccionada(errorMensaje = '') {
         subtitulo.textContent = '';
         body.className = 'ficha-vacio';
         body.textContent = 'Pulsa el botón "Ver ficha" en la tabla de personajes.';
-        if (cabeceraPanel) {
-            cabeceraPanel.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-            cabeceraPanel.classList.add('clase-default');
+        if (modalFicha) {
+            modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
+            modalFicha.classList.add('clase-default');
         }
         ataqueEditandoId = null;
         return;
@@ -736,9 +736,9 @@ function renderFichaSeleccionada(errorMensaje = '') {
     const nivelPersonaje = personajeData?.nivel ?? '-';
     const claseCss = obtenerClaseCss(ficha?.clase);
 
-    if (cabeceraPanel) {
-        cabeceraPanel.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
-        cabeceraPanel.classList.add(claseCss);
+    if (modalFicha) {
+        modalFicha.classList.remove('clase-guerrero', 'clase-explorador', 'clase-hechicero', 'clase-default');
+        modalFicha.classList.add(claseCss);
     }
 
     titulo.textContent = `Ficha de ${nombrePersonaje}`;
@@ -781,6 +781,10 @@ function renderFichaSeleccionada(errorMensaje = '') {
 
     body.className = '';
     body.innerHTML = `
+        <div class="ficha-box" style="margin-bottom: 12px;">
+            <div><strong>Personaje:</strong> ${nombrePersonaje}</div>
+            <div><strong>ID Personaje:</strong> ${idPer}</div>
+        </div>
         <div class="ficha-layout">
             <div class="ficha-box">
                 <h4>Datos de ficha</h4>
