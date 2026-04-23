@@ -43,7 +43,6 @@ public class FichaService {
             if (fichaData.getInteligencia() != null) ficha.setInteligencia(fichaData.getInteligencia());
             if (fichaData.getSabiduria() != null) ficha.setSabiduria(fichaData.getSabiduria());
             if (fichaData.getCarisma() != null) ficha.setCarisma(fichaData.getCarisma());
-            if (fichaData.getIdPer() != null) ficha.setIdPer(fichaData.getIdPer());
             return fichaRepository.save(ficha);
         });
     }
@@ -61,7 +60,7 @@ public class FichaService {
     private FichaConAtaquesDTO toFichaConAtaquesDTO(Ficha ficha) {
         FichaConAtaquesDTO dto = new FichaConAtaquesDTO();
         dto.setIdFicha(ficha.getIdFicha());
-        dto.setIdPer(ficha.getIdPer());
+        dto.setIdPer(ficha.getIdFicha());
         dto.setClase(ficha.getClase());
         dto.setFuerza(ficha.getFuerza());
         dto.setDestreza(ficha.getDestreza());
@@ -70,12 +69,12 @@ public class FichaService {
         dto.setSabiduria(ficha.getSabiduria());
         dto.setCarisma(ficha.getCarisma());
 
-        if (ficha.getIdPer() == null) {
+        if (ficha.getIdFicha() == null) {
             dto.setAtaques(List.of());
             return dto;
         }
 
-        List<AtaqueDTO> ataques = ataqueRepository.findByPersonajeIdPer(ficha.getIdPer()).stream()
+        List<AtaqueDTO> ataques = ataqueRepository.findByPersonajeIdPer(ficha.getIdFicha()).stream()
                 .map(this::toAtaqueDTO)
                 .collect(Collectors.toList());
         dto.setAtaques(ataques);

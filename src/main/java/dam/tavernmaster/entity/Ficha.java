@@ -41,10 +41,6 @@ public class Ficha {
     @com.fasterxml.jackson.annotation.JsonProperty("carisma")
     private Integer carisma;
 
-    @Column(name = "id_per")
-    @com.fasterxml.jackson.annotation.JsonProperty("id_per")
-    private Integer idPer;
-
     // Constructors
     public Ficha() {
     }
@@ -125,14 +121,6 @@ public class Ficha {
         this.carisma = carisma;
     }
 
-    public Integer getIdPer() {
-        return idPer;
-    }
-
-    public void setIdPer(Integer idPer) {
-        this.idPer = idPer;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -157,7 +145,6 @@ public class Ficha {
                 ", inteligencia=" + inteligencia +
                 ", sabiduria=" + sabiduria +
                 ", carisma=" + carisma +
-                ", idPer=" + idPer +
                 '}';
     }
 }
