@@ -233,9 +233,10 @@
 
     <!-- TABS -->
     <div class="tabs">
-        <div class="tab active" onclick="activarTab('jugadores')">🎮 Jugadores</div>
-        <div class="tab" onclick="activarTab('personajes')">⚔️ Personajes</div>
-        <div class="tab" onclick="activarTab('campanas')">🏆 Campañas</div>
+        <div class="tab active" data-tab="jugadores" onclick="activarTab('jugadores')">🎮 Jugadores</div>
+        <div class="tab" data-tab="personajes" onclick="activarTab('personajes')">⚔️ Personajes</div>
+        <div class="tab" data-tab="fichas" onclick="activarTab('fichas')">🛡️ Fichas + Ataques</div>
+        <div class="tab" data-tab="campanas" onclick="activarTab('campanas')">🏆 Campañas</div>
     </div>
 
     <!-- ============ TAB JUGADORES ============ -->
@@ -378,12 +379,16 @@
             <div id="mensajeEditarPersonaje" class="mensaje"></div>
         </div>
 
-        <h3>🛡️ Fichas y ataques asociados</h3>
+    </div>
+
+    <!-- ============ TAB FICHAS + ATAQUES ============ -->
+    <div id="tab-fichas" class="tab-content">
+        <h2>🛡️ Fichas y ataques asociados</h2>
         <table id="FichasAtaquesTable">
             <thead>
             <tr>
                 <th>ID_FICHA</th>
-                <th>ID_PER</th>
+                <th>Personaje</th>
                 <th>Clase</th>
                 <th>Fuerza</th>
                 <th>Destreza</th>

@@ -5,6 +5,7 @@
 const API_BASE = '/api';
 const AUTH_STORAGE_KEY = 'tm_admin_auth';
 let appInicializada = false;
+let personajesPorId = new Map();
 
 // Inicialización
 if (document.readyState === 'loading') {
@@ -67,13 +68,7 @@ window.activarTab = function(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
     document.getElementById(`tab-${tabId}`)?.classList.add('active');
-
-    document.querySelectorAll('.tab').forEach(btn => {
-        if (btn.textContent.includes(tabId === 'jugadores' ? 'Jugadores' :
-                                      tabId === 'personajes' ? 'Personajes' : 'Campañas')) {
-            btn.classList.add('active');
-        }
-    });
+    document.querySelector(`.tab[data-tab="${tabId}"]`)?.classList.add('active');
 }
 
 // ============================================
@@ -225,6 +220,12 @@ window.borrarJugadorPorId = function(id) {
 async function cargarPersonajes() {
     const response = await fetch(`${API_BASE}/personajes`);
     const personajes = await response.json();
+    personajesPorId = new Map(
+        (Array.isArray(personajes) ? personajes : []).map(p => [
+            p.id_per || p.id,
+            p.nombre_per || p.nombrePer || '-'
+        ])
+    );
     console.log('📥 Personajes recibidos:', personajes);
     mostrarPersonajes(personajes);
     document.getElementById('statPersonajes').textContent = personajes.length;
@@ -588,6 +589,7 @@ function mostrarFichasConAtaques(fichas) {
     tbody.innerHTML = fichas.map(ficha => {
         const idFicha = ficha.id_ficha ?? '-';
         const idPer = ficha.id_per ?? idFicha;
+        const nombrePersonaje = personajesPorId.get(idPer) || `ID ${idPer}`;
 
         const ataques = Array.isArray(ficha.ataques) ? ficha.ataques : [];
         const ataquesTexto = ataques.length
@@ -602,7 +604,7 @@ function mostrarFichasConAtaques(fichas) {
         return `
             <tr>
                 <td><strong>${idFicha}</strong></td>
-                <td>${idPer}</td>
+                <td>${nombrePersonaje}</td>
                 <td>${ficha.clase || '-'}</td>
                 <td>${ficha.fuerza ?? '-'}</td>
                 <td>${ficha.destreza ?? '-'}</td>
